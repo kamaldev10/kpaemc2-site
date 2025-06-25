@@ -1,0 +1,22 @@
+# Abaikan semua direktori node_modules di seluruh proyek
+**/node_modules
+
+# Abaikan direktori build dan output
+**/dist
+**/build
+**/.next
+**/out
+
+# Abaikan cache Turborepo
+.turbo
+
+# Abaikan file lock dari package manager
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Abaikan file log
+*.log
+
+# Abaikan file konfigurasi lokal VSCode
+.vscode
