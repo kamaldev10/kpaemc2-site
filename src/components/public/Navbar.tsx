@@ -13,8 +13,7 @@ import SwitchThemeToggle from "../shared/SwitchThemeToggle";
 
 const navItems = [
   { label: "Beranda", href: "/" },
-  { label: "Artikel", href: "/articles" },
-  { label: "Event", href: "/events" },
+  { label: "Postingan", href: "/posts" },
   { label: "Galeri", href: "/gallery" },
   { label: "Tentang", href: "/about" },
   { label: "Kontak", href: "/contact" },
@@ -69,7 +68,7 @@ export default function Navbar() {
       </form>
 
       {/* Daftar Link Navigasi */}
-      <nav className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 px-4 md:px-0">
+      <nav className="flex flex-col xl:flex-row xl:items-center gap-4 xl:gap-6 px-4 xl:px-0">
         {navItems.map((item) => (
           <Link
             key={item.href}
@@ -87,23 +86,27 @@ export default function Navbar() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 dark:bg-background/80 backdrop-blur-sm border-b border-border">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-between gap-4 px-4 py-3 md:px-6">
+        <div className="mx-auto flex max-w-screen-2xl items-center justify-between gap-4 px-4 py-3 md:px-6">
           {/* 1. Logo */}
           <Link
             href="/"
-            className="inline-flex text-xl font-bold text-primary flex-shrink-0 gap-2"
+            className="inline-flex text-xl font-bold text-primary flex-shrink-0 gap-2 items-center xl:w-1/5"
           >
             <Image
               src="/images/logo.svg"
               alt="Logo KPA EMC²"
-              width={30}
-              height={30}
+              width={42}
+              height={42}
             ></Image>
-            <span className="">KPA EMC²</span>
+
+            <span className="hidden xl:inline text-sm">
+              Kelompok Pecinta Alam Einstein Mapalindup Ceria Club
+            </span>
+            <span className="inline xl:hidden">KPA EMC²</span>
           </Link>
 
           {/* 2. Search Bar (Desktop) */}
-          <div className="hidden md:flex flex-1 justify-center px-8">
+          <div className="hidden xl:flex flex-1 justify-center px-8">
             <form onSubmit={handleSearch} className="relative w-full max-w-md">
               <input
                 type="text"
@@ -119,7 +122,7 @@ export default function Navbar() {
           {/* Wrapper untuk item sisi kanan */}
           <div className="flex items-center align-middle gap-4 flex-shrink-0">
             {/* 3 & 4. Navigasi & Dashboard (Desktop) */}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden xl:flex items-center gap-6">
               <NavigationContent />
               <Link
                 href="/dashboard"
@@ -137,7 +140,7 @@ export default function Navbar() {
             />
 
             {/* Tombol Menu Mobile */}
-            <div className="md:hidden">
+            <div className="xl:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 aria-label="Buka menu"
@@ -159,7 +162,7 @@ export default function Navbar() {
       />
       <div
         className={cn(
-          "md:hidden fixed top-0 left-0 h-full w-4/5 max-w-sm bg-background shadow-lg z-50 transform transition-transform duration-300 ease-in-out",
+          "xl:hidden fixed top-0 left-0 h-full w-4/5 max-w-xs bg-background shadow-lg z-50 transform transition-transform duration-300 ease-in-out",
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
