@@ -14,7 +14,7 @@ import SwitchThemeToggle from "../shared/SwitchThemeToggle";
 const navItems = [
   { label: "Beranda", href: "/" },
   { label: "Postingan", href: "/posts" },
-  { label: "Galeri", href: "/gallery" },
+  // { label: "Galeri", href: "/gallery" },
   { label: "Tentang", href: "/about" },
   { label: "Kontak", href: "/contact" },
 ];
