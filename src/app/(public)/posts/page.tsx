@@ -242,9 +242,7 @@ export default function PostsPage() {
                 <SheetTitle>Filter Postingan</SheetTitle>
                 <SheetDescription>Persempit pencarian Anda.</SheetDescription>
               </SheetHeader>
-              {/* ======================================================== */}
-              {/* BAGIAN YANG HILANG & KINI DITAMBAHKAN KEMBALI            */}
-              {/* ======================================================== */}
+
               <div className="grid gap-6 py-6">
                 <div className="space-y-2">
                   <Label htmlFor="search-tags-mobile">
