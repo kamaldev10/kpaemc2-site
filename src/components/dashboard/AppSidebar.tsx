@@ -2,20 +2,21 @@
 
 import * as React from "react";
 import {
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
+  LayoutDashboard,
+  FileText,
+  Newspaper,
+  GalleryHorizontal,
+  Users,
+  Share2,
+  Settings,
+  Globe,
   LifeBuoy,
-  Map,
-  PieChart,
   Send,
-  Settings2,
-  SquareTerminal,
+  BookUser,
 } from "lucide-react";
 
 import { NavMain } from "@/components/dashboard/NavMain";
-import { NavProjects } from "@/components/dashboard/NavProjects";
+import { NavPost } from "./NavPost";
 import { NavSecondary } from "@/components/dashboard/NavSecondary";
 import { NavUser } from "@/components/dashboard/NavUser";
 import {
@@ -27,101 +28,53 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Ali Musthafa Kamal",
+    email: "ali.kamal@example.com",
+    avatar: "/images/members/ali.jpg",
   },
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      title: "Konten ",
+      url: "/dashboard/posts",
+      icon: FileText,
       items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
+        { title: "Semua Postingan", url: "/dashboard/posts", icon: Newspaper },
+        { title: "Galeri", url: "/dashboard/gallery", icon: GalleryHorizontal },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "Internal Organisasi",
+      url: "/dashboard/members",
+      icon: Users,
       items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
+        { title: "Daftar Anggota", url: "/dashboard/members", icon: BookUser },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
+      title: "Manajemen Sosial Media",
+      url: "/dashboard/sosmed",
+      icon: Share2,
       items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
+        { title: "Jadwalkan Post", url: "/dashboard/sosmed/scheduler" },
+        { title: "Analitik", url: "/dashboard/sosmed/analytics" },
       ],
     },
   ],
   navSecondary: [
+    { title: "Publik Website", url: "/", icon: Globe },
+    { title: "Pengaturan", url: "/dashboard/settings", icon: Settings },
+
     {
       title: "Support",
       url: "#",
@@ -133,26 +86,33 @@ const data = {
       icon: Send,
     },
   ],
-  projects: [
+  navPosts: [
     {
-      name: "Design Engineering",
+      name: "Pendakian Gunung Djadi",
       url: "#",
-      icon: Frame,
     },
     {
-      name: "Sales & Marketing",
+      name: "Purnama PA Riau 9",
       url: "#",
-      icon: PieChart,
     },
     {
-      name: "Travel",
+      name: "Tanaman Obat dapat membantu pencernaan",
       url: "#",
-      icon: Map,
+    },
+    {
+      name: "Korupsi dilakukan oleh DLHK Riau senilai 10M",
+      url: "#",
+    },
+    {
+      name: "Selamat Kepada 174 atas dedikasinya sebagai anggota ",
+      url: "#",
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
   return (
     <Sidebar
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
@@ -162,23 +122,37 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href="/dashboard">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
+                  <Image
+                    src="/images/logo.svg"
+                    alt="Logo Organisasi"
+                    width={28}
+                    height={28}
+                    className="rounded-full"
+                  />
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-foreground">
+                    {process.env.NEXT_PUBLIC_ORG_NAME || "KPA EMC²"}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    Admin Panel
+                  </span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={data.navMain} pathname={pathname} />
+        <NavPost posts={data.navPosts} />
+        <NavSecondary
+          items={data.navSecondary}
+          pathname={pathname}
+          className="mt-auto"
+        />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

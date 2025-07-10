@@ -1,12 +1,15 @@
-"use client"
+"use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import * as React from "react";
+import Link from "next/link";
+import { ChevronRight, type LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils"; // <-- Impor 'cn' untuk kelas kondisional
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -17,62 +20,93 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
+// Definisikan tipe untuk props (tidak berubah)
+type NavItem = {
+  title: string;
+  url: string;
+  icon: LucideIcon;
+  items?: { title: string; url: string; icon?: LucideIcon }[];
+};
+
+type NavMainProps = {
+  items: NavItem[];
+  label?: string;
+  pathname: string;
+};
+
+export function NavMain({ items, label, pathname }: NavMainProps) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarMenu>
-        {items.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-              {item.items?.length ? (
-                <>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuAction className="data-[state=open]:rotate-90">
-                      <ChevronRight />
-                      <span className="sr-only">Toggle</span>
-                    </SidebarMenuAction>
-                  </CollapsibleTrigger>
+        {items.map((item) => {
+          const isActive = item.items
+            ? pathname.startsWith(item.url) // Untuk induk: aktif jika URL dimulai dengan path-nya
+            : pathname === item.url; // Untuk item tunggal: aktif jika URL sama persis
+
+          return (
+            <Collapsible key={item.title} asChild defaultOpen={isActive}>
+              <SidebarMenuItem>
+                <div className="flex items-center">
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    className={cn(
+                      "flex-1 justify-start",
+                      isActive && " font-semibold text-secondary-foreground" // Style untuk menu induk aktif
+                    )}
+                  >
+                    <Link href={item.url}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+
+                  {item.items && item.items.length > 0 && (
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuAction className="data-[state=open]:rotate-90">
+                        <ChevronRight className="h-4 w-4" />
+                        <span className="sr-only">Toggle</span>
+                      </SidebarMenuAction>
+                    </CollapsibleTrigger>
+                  )}
+                </div>
+
+                {item.items && item.items.length > 0 && (
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
-                              <span>{subItem.title}</span>
-                            </a>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
+                      {item.items.map((subItem) => {
+                        const isSubActive = pathname === subItem.url; // Cek submenu aktif
+                        return (
+                          <SidebarMenuSubItem key={subItem.title}>
+                            <SidebarMenuSubButton
+                              asChild
+                              size="sm"
+                              className={cn(
+                                isSubActive &&
+                                  "bg-secondary font-semibold text-primary"
+                              )} // Style untuk submenu aktif
+                            >
+                              <Link href={subItem.url}>
+                                {subItem.icon && (
+                                  <subItem.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                                )}
+                                <span>{subItem.title}</span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        );
+                      })}
                     </SidebarMenuSub>
                   </CollapsibleContent>
-                </>
-              ) : null}
-            </SidebarMenuItem>
-          </Collapsible>
-        ))}
+                )}
+              </SidebarMenuItem>
+            </Collapsible>
+          );
+        })}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }
