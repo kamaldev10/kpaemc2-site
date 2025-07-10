@@ -1,17 +1,10 @@
 // src/lib/dummy-data/AboutData.ts
 
-// Definisikan tipe data untuk struktur anggota agar bisa rekursif (bersarang)
-export type Member = {
-  name: string;
-  position: string;
-  children?: Member[]; // Anggota bisa memiliki bawahan/divisi
-};
-
-// Tipe data untuk setiap periode kepengurusan
+// Tipe data untuk setiap periode kepengurusan disederhanakan
 export type StructurePeriod = {
   period: string;
   image: string; // Path ke gambar/foto struktur
-  chairman: Member; // Ketua Umum pada periode tersebut
+  chairmanName: string; // Menyimpan nama ketua untuk referensi
 };
 
 // Tipe data utama untuk seluruh data "Tentang Kami"
@@ -26,71 +19,33 @@ export type About = {
 
 // Ekspor data utama
 export const AboutData: About = {
-  orgName: "KPA EMC2",
+  orgName: "KPA EMC²",
   description:
-    "KPA EMC2 adalah organisasi mahasiswa pecinta alam yang berdedikasi untuk menumbuhkan kesadaran dan kecintaan terhadap lingkungan melalui kegiatan petualangan, edukasi, dan konservasi. Kami berkomitmen untuk menjadi wadah bagi mahasiswa yang memiliki semangat petualang dan kepedulian tinggi terhadap kelestarian alam Indonesia.",
+    "KPA EMC² adalah organisasi kemahasiswaan milik FMIPA UNRI yang bertujuan menghimpun, membina, mengedukasi, dan menyalurkan potensi mahasiswa FMIPA UNRI, serta berkontribusi menjaga kelestarian dan keseimbangan lingkungan hidup.",
   vision:
-    "Menjadi organisasi pecinta alam yang unggul, inovatif, dan berpengaruh dalam menginspirasi generasi muda untuk menjaga dan melestarikan keanekaragaman hayati serta lingkungan hidup secara berkelanjutan.",
+    "Terwujudnya organisasi pecinta alam yang bertakwa kepada Tuhan Yang Maha Esa, berkarakter, berkualitas, serta berpartisipasi dalam pengembangan ilmu pengetahuan dan teknologi untuk mendukung pelestarian lingkungan hidup.",
   mission: [
-    "Menyelenggarakan kegiatan eksplorasi dan petualangan di alam bebas yang aman dan bertanggung jawab.",
-    "Mengadakan program edukasi dan pelatihan tentang konservasi lingkungan dan teknik bertahan hidup.",
-    "Berperan aktif dalam kampanye dan advokasi isu-isu lingkungan di tingkat lokal maupun nasional.",
-    "Membangun jejaring dan kerja sama dengan organisasi sejenis, pemerintah, dan masyarakat umum.",
-    "Membentuk anggota yang memiliki karakter tangguh, berintegritas, dan berjiwa pemimpin.",
+    "Mengembangkan eksistensi organisasi di dalam maupun di luar universitas.",
+    "Membentuk generasi yang bermoral, berkarakter dan intelektual.",
+    "Berkontribusi dalam kegiatan sosial dan menjaga pelestarian lingkungan hidup.",
+    "Menjalin silaturahmi baik kepada sesama pecinta alam maupun lembaga lain.",
   ],
-  activePeriod: "2024-2025",
+  activePeriod: "2025",
   structure: [
     {
-      period: "2024-2025",
-      image: "/images/struktur-2024-2025.png", // Contoh path gambar
-      chairman: {
-        name: "Ali Musthafa Kamal",
-        position: "Ketua Umum",
-        children: [
-          {
-            name: "Rahma Aulia",
-            position: "Sekretaris Umum",
-            children: [
-              { name: "Sari Putri", position: "Divisi Humas" },
-              { name: "Doni Saputra", position: "Divisi Kesekretariatan" },
-            ],
-          },
-          {
-            name: "Budi Santoso",
-            position: "Bendahara Umum",
-            children: [
-              { name: "Eka Wulandari", position: "Divisi Dana & Usaha" },
-            ],
-          },
-          {
-            name: "Ahmad Zaki",
-            position: "Ketua Divisi Gunung Hutan",
-            children: [],
-          },
-          {
-            name: "Fitriani",
-            position: "Ketua Divisi Panjat Tebing",
-            children: [],
-          },
-        ],
-      },
+      period: "2025",
+      image: "/images/struktur-2025.png", // Pastikan path gambar ini ada di folder /public/images
+      chairmanName: "Desti Seri Fatimah",
     },
     {
-      period: "2023-2024",
-      image: "/images/struktur-2023-2024.png",
-      chairman: {
-        name: "Rian Hidayat",
-        position: "Ketua Umum",
-        // Anda bisa mengisi data anak-anaknya jika diperlukan
-      },
+      period: "2024",
+      image: "/images/struktur-2024.png", // Pastikan path gambar ini ada di folder /public/images
+      chairmanName: "Rian Hidayat",
     },
     {
-      period: "2022-2023",
-      image: "/images/struktur-2022-2023.png",
-      chairman: {
-        name: "Annisa Fitri",
-        position: "Ketua Umum",
-      },
+      period: "2023",
+      image: "/images/struktur-2023.png", // Pastikan path gambar ini ada di folder /public/images
+      chairmanName: "Annisa Fitri",
     },
   ],
 };
