@@ -64,13 +64,13 @@ export default function HeroSection() {
                   <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
                     {event.title}
                   </h1>
-                  <p className="mt-4 line-clamp-3 text-lg leading-8 text-gray-200">
+                  <p className="mt-4 line-clamp-2 sm:line-clamp-3 text-base sm:text-lg leading-5 sm:leading-6 text-gray-200">
                     {event.description}
                   </p>
                   <Button
                     asChild
                     className="pointer-events-auto mt-6"
-                    size="lg"
+                    size="default"
                   >
                     <Link href={event.href}>
                       Lihat Detail Event
