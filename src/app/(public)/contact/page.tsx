@@ -95,7 +95,8 @@ export default function ContactPage() {
                       Alamat Kantor
                     </span>
                     <br />
-                    Jl. HR Soebrantas No. 155, Panam, Pekanbaru, Riau, 28293
+                    F9HG+C7F, Jl. Unri, Simpang Baru, Kec. Tampan, Kota
+                    Pekanbaru, Riau 28292{" "}
                   </div>
                 </div>
                 <Separator />
@@ -108,7 +109,7 @@ export default function ContactPage() {
                       href="mailto:kontak@kpaemc2.org"
                       className="hover:text-primary"
                     >
-                      kontak@kpaemc2.org
+                      kpaemc2fmipaunri@gmail.com{" "}
                     </a>
                   </div>
                 </div>
@@ -121,7 +122,7 @@ export default function ContactPage() {
                     </span>
                     <br />
                     <a href="tel:+6281234567890" className="hover:text-primary">
-                      +62 812-3456-7890
+                      +62 821-7918-2733 (Desti)
                     </a>
                   </div>
                 </div>
@@ -135,7 +136,7 @@ export default function ContactPage() {
               <CardContent>
                 {/* Ganti 'src' dengan link embed Google Maps Anda */}
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.663351307613!2d101.373809!3d0.4688179!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5a8d3856b3531%3A0x155e71457e231b6!2sUniversitas%20Riau%20Kampus%20Binawidya!5e0!3m2!1sid!2sid!4v1680000000000"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d249.35494832528005!2d101.37559709597153!3d0.4785193150900254!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5a955963a9e4d%3A0xfdbd27c7213a785a!2sSekretariat%20KPA%20EMC%C2%B2!5e0!3m2!1sid!2sid!4v1751986613144!5m2!1sid!2sid"
                   width="100%"
                   height="300"
                   style={{ border: 0 }}
