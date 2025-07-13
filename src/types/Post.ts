@@ -1,5 +1,4 @@
 // types/Post.ts
-
 export type Post = {
   id: number;
   title: string;
@@ -7,19 +6,19 @@ export type Post = {
   excerpt: string;
   description: string;
   imageUrl: string;
-  href: string;
-  date: string;
+  date: string | Date;
   category: "Artikel" | "Event";
-  author?: string;
-  readTime?: string;
-  location?: string;
   tags: string[];
   featured?: boolean;
-  views?: number;
-  likes?: number;
-  eventDate?: string;
-  eventTime?: string;
-  registrationLink?: string;
+
+  // Field Artikel
+  author?: string;
+  readTime?: string;
+
+  // Field Event
+  location?: string;
+  eventStartDate?: string | Date;
+  eventEndDate?: string | Date;
   price?: string;
-  relatedPosts?: number[];
+  registrationLink?: string;
 };
