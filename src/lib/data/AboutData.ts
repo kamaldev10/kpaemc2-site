@@ -10,6 +10,8 @@ export type StructurePeriod = {
 // Tipe data utama untuk seluruh data "Tentang Kami"
 export type About = {
   orgName: string;
+  bornDate: string;
+  motto: string;
   description: string;
   vision: string;
   mission: string[];
@@ -20,6 +22,8 @@ export type About = {
 // Ekspor data utama
 export const AboutData: About = {
   orgName: "KPA EMC²",
+  bornDate: "10 Oktober 1984",
+  motto: "Bergerak Satu Asa, Berbekal Alam Lestari",
   description:
     "KPA EMC² adalah organisasi kemahasiswaan milik FMIPA UNRI yang bertujuan menghimpun, membina, mengedukasi, dan menyalurkan potensi mahasiswa FMIPA UNRI, serta berkontribusi menjaga kelestarian dan keseimbangan lingkungan hidup.",
   vision:
