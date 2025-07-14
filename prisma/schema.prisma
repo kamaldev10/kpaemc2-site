@@ -12,6 +12,8 @@ datasource db {
 model AboutInfo {
   id           Int      @id @default(1) // Hanya akan ada satu baris, jadi ID-nya selalu 1
   orgName      String
+  bornDate     String   
+  motto        String   
   description  String   @db.Text
   vision       String   @db.Text
   mission      String[] // Array of strings untuk daftar misi
