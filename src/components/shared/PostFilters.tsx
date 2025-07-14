@@ -1,7 +1,7 @@
 // src/components/shared/PostFilters.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,26 +25,27 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { SlidersHorizontal, Search } from "lucide-react";
-import { PostsData } from "@/lib/dummy-data/PostsData";
-import { type FilterState } from "@/hooks/useFilteredPosts"; // Impor tipe
+import { type FilterState } from "@/hooks/useFilteredPosts";
 import { cn } from "@/lib/utils";
 
 type PostFiltersProps = {
   initialFilters: FilterState;
   onApplyFilters: (filters: FilterState) => void;
+  uniqueYears: string[];
   className?: string;
 };
-
-const uniqueYears = Array.from(
-  new Set(PostsData.map((post) => new Date(post.date).getFullYear().toString()))
-).sort((a, b) => Number(b) - Number(a));
 
 export default function PostFilters({
   initialFilters,
   onApplyFilters,
+  uniqueYears,
   className,
 }: PostFiltersProps) {
   const [localFilters, setLocalFilters] = useState<FilterState>(initialFilters);
+
+  useEffect(() => {
+    setLocalFilters(initialFilters);
+  }, [initialFilters]);
 
   const handleInputChange = (
     key: keyof FilterState,
@@ -58,7 +59,7 @@ export default function PostFilters({
   };
 
   const handleReset = () => {
-    const defaultFilters = {
+    const defaultFilters: FilterState = {
       search: "",
       year: "all",
       category: "all",
@@ -68,6 +69,7 @@ export default function PostFilters({
     onApplyFilters(defaultFilters);
   };
 
+  // JSX yang berisi semua input filter
   const FilterForm = (
     <>
       <div className="space-y-2">
@@ -122,10 +124,7 @@ export default function PostFilters({
             handleInputChange("featured", !!checked)
           }
         />
-        <Label
-          htmlFor="featured"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
+        <Label htmlFor="featured" className="text-sm font-medium">
           Hanya tampilkan yang utama
         </Label>
       </div>
@@ -135,16 +134,12 @@ export default function PostFilters({
   return (
     <div className={cn(className)}>
       {/* Tampilan Desktop Horizontal */}
-      <div
-        className={cn(
-          "hidden md:flex items-center gap-2 p-3 border bg-card rounded-full shadow-sm",
-          className
-        )}
-      >
+      <div className="hidden md:flex items-center gap-2 p-3 border bg-card rounded-lg shadow-sm">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Label className="hidden">Cari Tag / Judul</Label>
           <Input
-            placeholder="Cari tag..."
+            placeholder="Cari tag / judul..."
             className="pl-10 rounded-full"
             value={localFilters.search}
             onChange={(e) => handleInputChange("search", e.target.value)}
@@ -214,7 +209,7 @@ export default function PostFilters({
               <SheetTitle>Filter Postingan</SheetTitle>
               <SheetDescription>Persempit pencarian Anda.</SheetDescription>
             </SheetHeader>
-            <div className="grid gap-6 py-6 px-4">{FilterForm}</div>
+            <div className="grid gap-6 py-6">{FilterForm}</div>
             <SheetFooter>
               <SheetClose asChild>
                 <Button onClick={handleApply} className="w-full">
