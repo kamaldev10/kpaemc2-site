@@ -182,7 +182,9 @@ function PostsPageContent() {
       <Card>
         <CardHeader>
           <CardTitle>Daftar Semua Postingan</CardTitle>
-          <CardDescription>Terdapat {totalPosts} postingan .</CardDescription>
+          <CardDescription>
+            Ditemukan<strong> {totalPosts} </strong>postingan .
+          </CardDescription>
           <PostFilters
             initialFilters={filters}
             onApplyFilters={handleApplyFilters}
@@ -192,7 +194,7 @@ function PostsPageContent() {
         <CardContent>
           <div className="hidden md:block">
             <Table className="border">
-              <TableHeader className="border bg-accent">
+              <TableHeader className="border bg-accent ">
                 <TableRow>
                   <TableHead className="hidden w-[100px] sm:table-cell">
                     <span className="sr-only">Gambar</span>
@@ -374,37 +376,40 @@ function PostsPageContent() {
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
-                  <Link
-                    href={`/dashboard/posts?${new URLSearchParams({
-                      ...Object.fromEntries(searchParams),
-                      page: String(page - 1),
-                    })}`}
-                    className={
-                      page === 1 ? "pointer-events-none opacity-50" : ""
-                    }
-                  >
-                    <PaginationPrevious />
-                  </Link>
+                  {page > 1 ? (
+                    <Link
+                      href={`/dashboard/posts?${new URLSearchParams({
+                        ...Object.fromEntries(searchParams),
+                        page: String(page - 1),
+                      })}`}
+                    >
+                      <PaginationPrevious />
+                    </Link>
+                  ) : (
+                    <PaginationPrevious className="pointer-events-none opacity-50" />
+                  )}
                 </PaginationItem>
+
                 <PaginationItem>
                   <span className="px-4 text-sm font-medium">
                     Halaman {page} dari {totalPages}
                   </span>
                 </PaginationItem>
+
                 <PaginationItem>
-                  <Link
-                    href={`/dashboard/posts?${new URLSearchParams({
-                      ...Object.fromEntries(searchParams),
-                      page: String(page + 1),
-                    })}`}
-                    className={
-                      page === totalPages
-                        ? "pointer-events-none opacity-50"
-                        : ""
-                    }
-                  >
-                    <PaginationNext />
-                  </Link>
+                  {page < totalPages ? (
+                    <Link
+                      href={`/dashboard/posts?${new URLSearchParams({
+                        ...Object.fromEntries(searchParams),
+                        page: String(page + 1),
+                      })}`}
+                      passHref
+                    >
+                      <PaginationNext />
+                    </Link>
+                  ) : (
+                    <PaginationNext className="pointer-events-none opacity-50" />
+                  )}
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
