@@ -7,18 +7,18 @@ export type Post = {
   description: string;
   imageUrl: string;
   date: string | Date;
-  category: "Artikel" | "Event";
+  category: string;
   tags: string[];
-  featured?: boolean;
+  featured?: boolean | null;
 
   // Field Artikel
-  author?: string;
-  readTime?: string;
+  author?: string | null;
+  readTime?: string | null;
 
   // Field Event
-  location?: string;
-  eventStartDate?: string | Date;
-  eventEndDate?: string | Date;
-  price?: string;
-  registrationLink?: string;
+  location?: string | null;
+  eventStartDate?: string | Date | null;
+  eventEndDate?: string | Date | null;
+  price?: string | null;
+  registrationLink?: string | null;
 };
