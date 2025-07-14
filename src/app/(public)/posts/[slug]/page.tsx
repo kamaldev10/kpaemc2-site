@@ -1,21 +1,20 @@
-// app/(public)/posts/[slug]/page.tsx
-
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { PostsData } from "@/lib/dummy-data/PostsData";
+import { PostService } from "@/services/post.service"; // <-- 1. Impor Service
 import PostDetailView from "@/components/public/post/PostDetailView";
 
 type PageProps = {
-  params: Promise<{ slug: string }>; // Ubah tipe menjadi Promise
+  params: { slug: string };
 };
 
 // Fungsi generateMetadata untuk SEO dinamis
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  // PERBAIKAN: Await params sebelum mengakses propertinya
-  const { slug } = await params;
-  const post = PostsData.find((p) => p.slug === slug);
+  const { slug } = params; // <-- Akses langsung tanpa 'await'
+
+  // Ambil data dari database untuk metadata
+  const post = await PostService.getBySlug(slug);
 
   if (!post) {
     return { title: "Postingan Tidak Ditemukan" };
@@ -34,11 +33,10 @@ export async function generateMetadata({
 
 // Komponen Halaman (Server Component)
 export default async function PostPage({ params }: PageProps) {
-  // PERBAIKAN: Await params sebelum mengakses propertinya
-  const { slug } = await params;
+  const { slug } = params; // <-- Akses langsung tanpa 'await'
 
-  // 1. Ambil data di server
-  const post = PostsData.find((p) => p.slug === slug);
+  // 1. Ambil data di server menggunakan service
+  const post = await PostService.getBySlug(slug);
 
   // 2. Jika tidak ada data, tampilkan halaman 404
   if (!post) {
@@ -46,5 +44,6 @@ export default async function PostPage({ params }: PageProps) {
   }
 
   // 3. Render komponen tampilan dan kirim data sebagai props
+  // Pastikan Anda sudah membuat komponen PostDetailView seperti di langkah sebelumnya
   return <PostDetailView post={post} />;
 }

@@ -4,7 +4,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { AboutData } from "@/lib/dummy-data/AboutData";
+import { AboutData } from "@/lib/data/AboutData";
 import {
   Select,
   SelectContent,
