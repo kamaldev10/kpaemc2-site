@@ -1,7 +1,7 @@
-// app/dashboard/posts/edit/[slug]/page.tsx
-import PostForm from "@/components/dashboard/posts/PostForm";
-import { PostsData } from "@/lib/dummy-data/PostsData";
 import { notFound } from "next/navigation";
+import { PostService } from "@/services/post.service"; // Impor service
+import AdminPostForm from "@/components/dashboard/posts/AdminPostForm";
+import BackButton from "@/components/shared/BackButton";
 
 // Komponen Halaman (Server Component) untuk mengambil data
 export default async function EditPostPage({
@@ -11,20 +11,22 @@ export default async function EditPostPage({
 }) {
   const { slug } = await params;
 
-  // 1. Ambil data postingan yang akan di-edit berdasarkan slug
-  // Di aplikasi nyata, ini akan menjadi panggilan ke database atau API
-  const postToEdit = PostsData.find((p) => p.slug === slug);
+  // 1. Ambil data postingan dari database melalui service
+  const postToEdit = await PostService.getBySlug(slug);
 
-  // 2. Jika postingan dengan slug tersebut tidak ada, tampilkan halaman 404
+  // 2. Jika postingan tidak ditemukan, tampilkan halaman 404
   if (!postToEdit) {
-    notFound();
+    return notFound();
   }
 
-  // 3. Render komponen PostForm dan kirim data sebagai 'initialData'
+  // 3. Render komponen form dan kirim data sebagai 'initialData'
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
-      <div className="space-y-1">
+      <div className="flex">
+        <BackButton className="mb-0" />
         <h1 className="text-lg font-semibold md:text-2xl">Update Postingan</h1>
+      </div>
+      <div className="space-y-1">
         <p className="text-sm text-muted-foreground">
           Ubah field di bawah ini untuk memperbarui postingan:{" "}
           <span className="font-medium text-primary">
@@ -32,11 +34,7 @@ export default async function EditPostPage({
           </span>
         </p>
       </div>
-
-      {/* Kita menggunakan komponen PostForm yang sama persis dengan halaman 'Tambah Baru'.
-         Dengan memberikan prop 'initialData', form akan otomatis terisi.
-       */}
-      <PostForm initialData={postToEdit} />
+      <AdminPostForm initialData={postToEdit} />
     </div>
   );
 }

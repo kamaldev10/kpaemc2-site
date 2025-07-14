@@ -1,7 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+
+// Komponen UI
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -41,92 +44,98 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import {
-  MoreHorizontal,
-  PlusCircle,
-  Pencil,
-  Trash2,
-  ArrowUpDown,
-} from "lucide-react";
-import { MembersData, type Member } from "@/lib/dummy-data/MembersData";
-import ExportMembersButton from "@/components/dashboard/members/ExportMembersButton";
-import ImportMembersDialog from "@/components/dashboard/members/ImportMembersDialog";
-import MemberForm from "@/components/dashboard/members/MemberForm";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Loader2,
+  MoreHorizontal,
+  PlusCircle,
+  Pencil,
+  Trash2,
+  ArrowUpDown,
+} from "lucide-react";
 import { toast } from "sonner";
 
-const MEMBERS_PER_PAGE = 20;
+// Komponen & Data
+import ExportMembersButton from "@/components/dashboard/members/ExportMembersButton";
+import ImportMembersDialog from "@/components/dashboard/members/ImportMembersDialog";
+import MemberForm from "@/components/dashboard/members/MemberForm";
+import { type Member } from "@/types/Member"; // Disarankan memindah tipe ke folder terpusat
 
-// Definisikan kunci yang valid untuk sorting agar lebih aman
+const MEMBERS_PER_PAGE = 20;
 type SortableKey = "name" | "nomorAnggota" | "jurusan" | "status";
 
 export default function MembersManagementPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // State untuk UI
+  const [members, setMembers] = useState<Member[]>([]);
+  const [totalMembers, setTotalMembers] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<Member | undefined>(
     undefined
   );
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortConfig, setSortConfig] = useState<{
-    key: SortableKey; // Gunakan tipe yang sudah dibatasi
-    direction: "asc" | "desc";
-  }>({
-    key: "nomorAnggota",
-    direction: "desc",
-  });
 
-  // Logika untuk mengurutkan data dengan penanganan nilai 'undefined'
-  const sortedMembers = useMemo(() => {
-    return [...MembersData].sort((a, b) => {
-      const key = sortConfig.key;
-      // Berikan nilai default jika properti tidak ada, untuk perbandingan yang aman
-      const aValue = a[key] || "";
-      const bValue = b[key] || "";
+  // Baca state dari URL
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const sortKey = (searchParams.get("sort") as SortableKey) || "nomorAnggota";
+  const sortDir = (searchParams.get("dir") as "asc" | "desc") || "asc";
 
-      if (aValue < bValue) {
-        return sortConfig.direction === "asc" ? -1 : 1;
-      }
-      if (aValue > bValue) {
-        return sortConfig.direction === "asc" ? 1 : -1;
-      }
-      return 0;
+  const totalPages = Math.ceil(totalMembers / MEMBERS_PER_PAGE);
+
+  const fetchMembers = useCallback(async () => {
+    setIsLoading(true);
+    const params = new URLSearchParams({
+      page: String(currentPage),
+      limit: String(MEMBERS_PER_PAGE),
+      sort: sortKey,
+      dir: sortDir,
     });
-  }, [sortConfig]);
 
-  // Logika Pagination sekarang menggunakan data yang sudah diurutkan
-  const totalPages = Math.ceil(sortedMembers.length / MEMBERS_PER_PAGE);
-  const paginatedMembers = sortedMembers.slice(
-    (currentPage - 1) * MEMBERS_PER_PAGE,
-    currentPage * MEMBERS_PER_PAGE
-  );
-
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+    try {
+      const response = await fetch(`/api/admin/members?${params.toString()}`);
+      if (!response.ok) throw new Error("Gagal mengambil data anggota");
+      const data = await response.json();
+      const total = Number(response.headers.get("X-Total-Count"));
+      setMembers(data);
+      setTotalMembers(total);
+    } catch (error) {
+      toast.error("Gagal memuat data anggota.");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
+  }, [currentPage, sortKey, sortDir]);
+
+  useEffect(() => {
+    fetchMembers();
+  }, [fetchMembers]);
+
+  const updateUrlParams = (newParams: Record<string, string>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(newParams).forEach(([key, value]) => params.set(key, value));
+    router.push(`/dashboard/members?${params.toString()}`);
   };
 
   const handleSortChange = (key: SortableKey) => {
-    setSortConfig((current) => ({
-      key,
-      direction:
-        current.key === key && current.direction === "asc" ? "desc" : "asc",
-    }));
-    setCurrentPage(1); // Kembali ke halaman 1 setiap kali sorting diubah
+    const direction = sortKey === key && sortDir === "asc" ? "desc" : "asc";
+    updateUrlParams({ sort: key, dir: direction, page: "1" });
   };
 
   const handleOpenForm = (member?: Member) => {
     setSelectedMember(member);
     setIsFormOpen(true);
   };
-
   const handleFormSuccess = () => {
     setIsFormOpen(false);
-    // Di aplikasi nyata, Anda akan memuat ulang data di sini
+    fetchMembers();
+    toast.success("Data anggota berhasil disimpan!");
   };
 
   const handleDelete = (member: Member) => {
@@ -134,8 +143,21 @@ export default function MembersManagementPage() {
       description: `Apakah Anda yakin ingin menghapus anggota "${member.name}"?`,
       action: {
         label: "Hapus",
-        onClick: () => toast.success(`Anggota "${member.name}" telah dihapus.`),
+        onClick: async () => {
+          try {
+            const response = await fetch(`/api/admin/members/${member.id}`, {
+              method: "DELETE",
+            });
+            if (!response.ok) throw new Error("Gagal menghapus anggota.");
+            toast.success(`Anggota "${member.name}" telah dihapus.`);
+            fetchMembers(); // Muat ulang data setelah sukses
+          } catch (error) {
+            toast.error("Gagal menghapus anggota.");
+            console.log(error);
+          }
+        },
       },
+      // PERBAIKAN 3: Tambahkan onClick kosong pada cancel
       cancel: { label: "Batal", onClick: () => {} },
     });
   };
@@ -167,7 +189,7 @@ export default function MembersManagementPage() {
         </div>
         <div className="flex items-center gap-2">
           <ImportMembersDialog />
-          <ExportMembersButton data={MembersData} />
+          <ExportMembersButton data={members} />
           <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
             <DialogTrigger asChild>
               <Button
@@ -175,7 +197,8 @@ export default function MembersManagementPage() {
                 className="gap-1"
                 onClick={() => handleOpenForm()}
               >
-                <PlusCircle className="h-4 w-4" /> Tambah Anggota
+                <PlusCircle className="h-4 w-4" />
+                Tambah Anggota
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -198,25 +221,20 @@ export default function MembersManagementPage() {
           <div>
             <CardTitle>Daftar Anggota</CardTitle>
             <CardDescription>
-              Menampilkan {paginatedMembers.length} dari {MembersData.length}{" "}
-              total anggota.
+              Menampilkan {members.length} dari {totalMembers} total anggota.
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Urutkan:</span>
             <Select
-              value={`${sortConfig.key}-${sortConfig.direction}`}
+              value={`${sortKey}-${sortDir}`}
               onValueChange={(value) => {
-                const [key, direction] = value.split("-") as [
-                  SortableKey,
-                  "asc" | "desc"
-                ];
-                handleSortChange(key);
-                setSortConfig({ key, direction }); // Langsung set untuk sinkronisasi dropdown
+                const [key, dir] = value.split("-");
+                updateUrlParams({ sort: key, dir: dir });
               }}
             >
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Pilih Urutan" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="name-asc">Nama (A-Z)</SelectItem>
@@ -227,20 +245,16 @@ export default function MembersManagementPage() {
                 <SelectItem value="nomorAnggota-desc">
                   No. Anggota (Desc)
                 </SelectItem>
-                <SelectItem value="jurusan-asc">Jurusan (Asc)</SelectItem>
-                <SelectItem value="jurusan-desc">Jurusan (Desc)</SelectItem>
-                <SelectItem value="status-asc">Status (Asc)</SelectItem>
-                <SelectItem value="status-desc">Status (Desc)</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <Table className="min-w-[800px]">
+            <Table className="min-w-xl">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[300px]">
+                  <TableHead className="max-w-lg">
                     <Button
                       variant="ghost"
                       onClick={() => handleSortChange("name")}
@@ -256,82 +270,83 @@ export default function MembersManagementPage() {
                       No. Anggota <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                   </TableHead>
+                  <TableHead>Jurusan</TableHead>
                   <TableHead>
-                    <Button
-                      variant="ghost"
-                      onClick={() => handleSortChange("jurusan")}
-                    >
-                      Jurusan <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
-                  <TableHead>
-                    <Button
-                      variant="ghost"
-                      onClick={() => handleSortChange("status")}
-                    >
-                      Status <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
+                    <Button variant="ghost">Status</Button>
                   </TableHead>
                   <TableHead className="text-right">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedMembers.map((member) => (
-                  <TableRow key={member.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Image
-                          src={member.avatarUrl || "/images/placeholder.svg"}
-                          alt={member.name}
-                          width={40}
-                          height={40}
-                          className="rounded-full object-cover bg-muted"
-                        />
-                        <div>
-                          <p className="font-medium">{member.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {member.nomorTelepon || "-"}
-                          </p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{member.nomorAnggota}</Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {member.jurusan || "-"}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={getStatusVariant(member.status)}>
-                        {member.status || "N/A"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem
-                            onClick={() => handleOpenForm(member)}
-                          >
-                            <Pencil className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(member)}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Hapus
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center">
+                      <Loader2 className="h-6 w-6 animate-spin mx-auto" />{" "}
+                      Memuat data...
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  members.map((member) => (
+                    <TableRow key={member.id}>
+                      {" "}
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Image
+                            src={member.avatarUrl || "/images/placeholder.svg"}
+                            alt={member.name}
+                            width={40}
+                            height={40}
+                            className="rounded-full object-cover bg-muted"
+                          />
+                          <div>
+                            <p className="font-medium">{member.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {member.nomorTelepon || "-"}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">{member.nomorAnggota}</Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground flex">
+                        {member.jurusan || "-"}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={getStatusVariant(member.status)}
+                          className=""
+                        >
+                          {member.status || "N/A"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button size="icon" variant="ghost">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem
+                              onClick={() => handleOpenForm(member)}
+                            >
+                              <Pencil className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDelete(member)}
+                              className="text-destructive focus:text-destructive"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Hapus
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
@@ -342,13 +357,14 @@ export default function MembersManagementPage() {
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePageChange(currentPage - 1);
-                    }}
+                    // PERBAIKAN 1: Logika pindah halaman langsung di sini
+                    onClick={() =>
+                      updateUrlParams({ page: String(currentPage - 1) })
+                    }
                     className={
-                      currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50 cursor-not-allowed"
+                        : "cursor-pointer"
                     }
                   />
                 </PaginationItem>
@@ -359,15 +375,13 @@ export default function MembersManagementPage() {
                 </PaginationItem>
                 <PaginationItem>
                   <PaginationNext
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePageChange(currentPage + 1);
-                    }}
+                    onClick={() =>
+                      updateUrlParams({ page: String(currentPage + 1) })
+                    }
                     className={
                       currentPage === totalPages
-                        ? "pointer-events-none opacity-50"
-                        : ""
+                        ? "pointer-events-none opacity-50 cursor-not-allowed"
+                        : "cursor-pointer"
                     }
                   />
                 </PaginationItem>
