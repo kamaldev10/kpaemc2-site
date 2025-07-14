@@ -1,53 +1,60 @@
-// src/hooks/useFilteredPosts.ts
 import { useMemo } from "react";
-import { PostsData } from "@/lib/dummy-data/PostsData";
+import { type Post } from "@/types/Post";
+import fuzzysort from "fuzzysort";
 
-const POSTS_PER_PAGE = 10;
-
-// Tambahkan 'featured' ke tipe state filter
 export type FilterState = {
   search: string;
   year: string;
-  category: string;
-  featured: boolean; // Baru
+  category: "Artikel" | "Event" | "all";
+  featured: boolean;
 };
 
-export function useFilteredPosts(filters: FilterState, page: number) {
-  const filteredPosts = useMemo(() => {
-    return PostsData.filter((post) => {
-      const { search, year, category, featured } = filters;
-      const searchTags = search
-        .split(",")
-        .map((tag) => tag.trim().toLowerCase())
-        .filter(Boolean);
+function filterPosts(posts: Post[], filters: FilterState): Post[] {
+  return posts.filter((post) => {
+    const { search, year, category, featured } = filters;
+    const matchesSearch = !search
+      ? true
+      : fuzzysort.single(search, post.title + " " + post.tags.join(" ")) !==
+        null;
 
-      const matchesTags =
-        searchTags.length > 0
-          ? searchTags.every((searchTag) =>
-              post.tags?.some((tag) => tag.toLowerCase().includes(searchTag))
-            )
-          : true;
-      const matchesYear =
-        year !== "all"
-          ? new Date(post.date).getFullYear().toString() === year
-          : true;
-      const matchesCategory =
-        category !== "all" ? post.category === category : true;
-      const matchesFeatured = featured ? post.featured === true : true; // Logika filter featured
+    const matchesYear =
+      year !== "all"
+        ? new Date(post.date).getFullYear().toString() === year
+        : true;
 
-      return matchesTags && matchesYear && matchesCategory && matchesFeatured;
-    }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [filters]);
+    const matchesCategory =
+      category !== "all" ? post.category === category : true;
 
-  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+    const matchesFeatured = featured ? post.featured === true : true;
+
+    return matchesSearch && matchesYear && matchesCategory && matchesFeatured;
+  });
+}
+
+function sortPosts(posts: Post[]): Post[] {
+  return posts.slice().sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+}
+
+export function useFilteredPosts(
+  allPosts: Post[],
+  filters: FilterState,
+  page: number,
+  postsPerPage: number
+) {
+  const filteredPosts = useMemo(
+    () => sortPosts(filterPosts(allPosts, filters)),
+    [allPosts, filters]
+  );
 
   const paginatedPosts = useMemo(() => {
-    const startIndex = (page - 1) * POSTS_PER_PAGE;
-    return filteredPosts.slice(startIndex, startIndex + POSTS_PER_PAGE);
-  }, [page, filteredPosts]);
+    const startIndex = (page - 1) * postsPerPage;
+    return filteredPosts.slice(startIndex, startIndex + postsPerPage);
+  }, [filteredPosts, page, postsPerPage]);
 
   return {
-    totalPages,
+    totalPages: Math.ceil(filteredPosts.length / postsPerPage),
     paginatedPosts,
     totalResults: filteredPosts.length,
   };
