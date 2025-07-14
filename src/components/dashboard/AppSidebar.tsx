@@ -13,6 +13,7 @@ import {
   LifeBuoy,
   Send,
   BookUser,
+  CircleAlert,
 } from "lucide-react";
 
 import { NavMain } from "@/components/dashboard/NavMain";
@@ -59,6 +60,11 @@ const data = {
       icon: Users,
       items: [
         { title: "Daftar Anggota", url: "/dashboard/members", icon: BookUser },
+        {
+          title: "Tentang Organisasi",
+          url: "/dashboard/about",
+          icon: CircleAlert,
+        },
       ],
     },
     {
