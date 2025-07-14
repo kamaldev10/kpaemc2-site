@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { format } from "date-fns";
 
 // Impor logika & tipe
 import {
@@ -22,7 +21,8 @@ import { Form } from "@/components/ui/form";
 import MainContentFields from "./MainContentFields";
 import MetadataSidebar from "./MetadataSidebar";
 import z from "zod";
-import { generateSlug } from "@/lib/utils/generateSlug";
+import { generateSlug } from "@/lib/utils/generateSlugUtils";
+import { sanitizePostInitialData } from "@/lib/utils/sanitizePostInitialData";
 
 type PostFormProps = {
   initialData?: Post;
@@ -37,38 +37,15 @@ export default function AdminPostForm({ initialData }: PostFormProps) {
     // Gunakan skema input mentah untuk resolver
     resolver: zodResolver(postFormInputSchema),
     defaultValues: initialData
-      ? {
-          ...initialData,
-          date: new Date(initialData.date),
-          tags: Array.isArray(initialData.tags)
-            ? initialData.tags.join(", ")
-            : "",
-          featured: initialData.featured ?? false,
-          description: Array.isArray(initialData.description)
-            ? initialData.description.join("\n\n")
-            : initialData.description || "",
-          // Pecah DateTime menjadi Date dan Time untuk mengisi form
-          eventStartDate_Date: initialData.eventStartDate
-            ? new Date(initialData.eventStartDate)
-            : undefined,
-          eventStartDate_Time: initialData.eventStartDate
-            ? format(new Date(initialData.eventStartDate), "HH:mm")
-            : "",
-          eventEndDate_Date: initialData.eventEndDate
-            ? new Date(initialData.eventEndDate)
-            : undefined,
-          eventEndDate_Time: initialData.eventEndDate
-            ? format(new Date(initialData.eventEndDate), "HH:mm")
-            : "",
-        }
+      ? sanitizePostInitialData(initialData)
       : {
           title: "",
           slug: "",
           excerpt: "",
           description: "",
           imageUrl: "",
-          category: "Artikel",
           date: new Date(),
+          category: "Artikel",
           tags: "",
           featured: false,
         },
