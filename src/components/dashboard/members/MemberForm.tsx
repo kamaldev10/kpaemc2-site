@@ -1,9 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { memberFormSchema, type MemberFormValues } from "./MemberForm.logic";
-import { type Member } from "@/lib/dummy-data/MembersData";
+import { toast } from "sonner";
+import {
+  memberFormSchema,
+  type MemberFormValues,
+} from "@/lib/validation/member.schema"; // <-- Path impor diperbaiki
+import { type Member } from "@/types/Member"; // <-- Tipe diimpor dari lokasi terpusat
+
+// Komponen UI
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
 
 type MemberFormProps = {
   initialData?: Member;
@@ -31,27 +40,54 @@ export default function MemberForm({
   initialData,
   onSuccess,
 }: MemberFormProps) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const isUpdateMode = !!initialData;
+
   const form = useForm<MemberFormValues>({
     resolver: zodResolver(memberFormSchema),
-    // Nilai default disesuaikan. 'status' selalu memiliki nilai awal 'Aktif'.
     defaultValues: initialData || {
       name: "",
       nomorAnggota: "",
       jurusan: "",
       nomorTelepon: "",
-      status: "Aktif", // Nilai default untuk form baru
+      status: "Aktif",
       avatarUrl: "",
     },
   });
+  async function onSubmit(values: MemberFormValues) {
+    setIsLoading(true);
+    try {
+      const method = isUpdateMode ? "PUT" : "POST";
+      const url = isUpdateMode
+        ? `/api/admin/members/${initialData.id}`
+        : "/api/admin/members";
 
-  function onSubmit(values: MemberFormValues) {
-    console.log("Data form yang disubmit:", values);
-    alert(
-      `Anggota "${values.name}" berhasil ${
-        initialData ? "diperbarui" : "ditambahkan"
-      }! (Cek console)`
-    );
-    onSuccess();
+      const response = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Gagal ${isUpdateMode ? "memperbarui" : "menambahkan"} anggota.`
+        );
+      }
+
+      toast.success(
+        `Anggota "${values.name}" berhasil ${
+          isUpdateMode ? "diperbarui" : "ditambahkan"
+        }!`
+      );
+      router.refresh(); // Memuat ulang data di halaman tabel untuk menampilkan perubahan
+      onSuccess(); // Memanggil callback untuk menutup modal
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Terjadi kesalahan. Silakan coba lagi.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -66,7 +102,7 @@ export default function MemberForm({
                 Nama Lengkap <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder="John Doe" {...field} />
+                <Input placeholder="John Doe" {...field} disabled={isLoading} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -81,7 +117,11 @@ export default function MemberForm({
                 Nomor Anggota <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder="EMC2.XX.XXX" {...field} />
+                <Input
+                  placeholder="174/KPA EMC²/2022"
+                  {...field}
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -95,7 +135,11 @@ export default function MemberForm({
               <FormLabel>
                 Status <span className="text-destructive">*</span>
               </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={isLoading}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih status" />
@@ -117,9 +161,30 @@ export default function MemberForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Jurusan</FormLabel>
-              <FormControl>
-                <Input placeholder="Ilmu Komputer" {...field} />
-              </FormControl>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={isLoading}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih Jurusan" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="Sistem Informasi">
+                    Sistem Informasi
+                  </SelectItem>
+                  <SelectItem value="Manajeman Informatika">
+                    Manajemen Informatika
+                  </SelectItem>
+                  <SelectItem value="Biologi">Biologi</SelectItem>
+                  <SelectItem value="Fisika">Fisika</SelectItem>
+                  <SelectItem value="Matematika">Matematika</SelectItem>
+                  <SelectItem value="Statistika">Statistika</SelectItem>
+                  <SelectItem value="Kimia">Kimia</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -131,7 +196,12 @@ export default function MemberForm({
             <FormItem>
               <FormLabel>Nomor Telepon</FormLabel>
               <FormControl>
-                <Input type="tel" placeholder="0812..." {...field} />
+                <Input
+                  type="tel"
+                  placeholder="0812..."
+                  {...field}
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -144,14 +214,21 @@ export default function MemberForm({
             <FormItem>
               <FormLabel>URL Foto Profil</FormLabel>
               <FormControl>
-                <Input placeholder="https://..." {...field} />
+                <Input
+                  placeholder="https://..."
+                  {...field}
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full mt-6">
-          {initialData ? "Update Anggota" : "Tambah Anggota"}
+
+        {/* Tombol submit dengan state loading */}
+        <Button type="submit" className="w-full mt-6" disabled={isLoading}>
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isUpdateMode ? "Update Anggota" : "Tambah Anggota"}
         </Button>
       </form>
     </Form>

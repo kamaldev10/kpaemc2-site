@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Upload, FileCheck2 } from "lucide-react";
 import * as XLSX from "xlsx";
-import { type Member } from "@/lib/dummy-data/MembersData"; // <-- 1. Impor tipe Member
+import { type Member } from "@/lib/data/MembersData"; // <-- 1. Impor tipe Member
 
 export default function ImportMembersDialog() {
   const [importedData, setImportedData] = useState<Partial<Member>[]>([]);
