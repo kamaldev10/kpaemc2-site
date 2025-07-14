@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { type Post } from "@/lib/dummy-data/PostsData";
+import { type Post } from "@/types/Post";
 import BackButton from "@/components/shared/BackButton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,16 +24,63 @@ type PostDetailProps = {
   post: Post;
 };
 
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString("id-ID", {
-    year: "numeric",
-    month: "long",
+const formatEventDateTime = (
+  start?: Date | string | null,
+  end?: Date | string | null
+) => {
+  if (!start) return { date: null, time: null };
+
+  const startDate = new Date(start);
+  const endDate = end ? new Date(end) : null;
+
+  const dateOptions: Intl.DateTimeFormatOptions = {
     day: "numeric",
-  });
+    month: "long",
+    year: "numeric",
+  };
+  const timeOptions: Intl.DateTimeFormatOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  };
+
+  const formattedStartDate = startDate.toLocaleDateString("id-ID", dateOptions);
+  const formattedStartTime = startDate.toLocaleTimeString("id-ID", timeOptions);
+
+  // Jika tidak ada tanggal akhir atau tanggalnya sama
+  if (!endDate || endDate.toDateString() === startDate.toDateString()) {
+    const formattedEndTime = endDate
+      ? endDate.toLocaleTimeString("id-ID", timeOptions)
+      : null;
+    return {
+      date: formattedStartDate,
+      time: formattedEndTime
+        ? `${formattedStartTime} - ${formattedEndTime}`
+        : formattedStartTime,
+    };
+  }
+
+  // Jika tanggalnya berbeda (multi-day event)
+  const formattedEndDate = endDate.toLocaleDateString("id-ID", dateOptions);
+  const formattedEndTime = endDate.toLocaleTimeString("id-ID", timeOptions);
+
+  return {
+    date: `${formattedStartDate} - ${formattedEndDate}`,
+    time: `${formattedStartTime} - ${formattedEndTime}`,
+  };
 };
 
 export default function PostDetailView({ post }: PostDetailProps) {
   const isEvent = post.category === "Event";
+  const { date: eventDateDisplay, time: eventTimeDisplay } =
+    formatEventDateTime(post.eventStartDate, post.eventEndDate);
+
+  const formatDate = (date: string | Date) =>
+    new Date(date).toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
 
   return (
     <main>
@@ -49,7 +96,9 @@ export default function PostDetailView({ post }: PostDetailProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         <div className="absolute bottom-0 left-0 w-full p-6 md:p-10">
           <div className="max-w-4xl mx-auto">
-            <Badge variant="secondary" className="mb-4">
+            <Badge
+              variant={post.category === "Event" ? "default" : "secondary"}
+            >
               {post.category}
             </Badge>
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl drop-shadow-lg">
@@ -86,7 +135,9 @@ export default function PostDetailView({ post }: PostDetailProps) {
           <div className={isEvent ? "lg:col-span-3" : "lg:col-span-4"}>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {post.description}
+                {Array.isArray(post.description)
+                  ? post.description.join("\n\n")
+                  : post.description}
               </ReactMarkdown>
             </div>
           </div>
@@ -99,24 +150,24 @@ export default function PostDetailView({ post }: PostDetailProps) {
                   <CardTitle>Detail Event</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {post.eventDate && (
+                  {eventDateDisplay && (
                     <div className="flex items-start gap-3">
                       <Calendar className="h-4 w-4 mt-1 flex-shrink-0 text-primary" />
                       <div>
-                        <p className="font-semibold text-sm">Tanggal Acara</p>
+                        <p className="font-semibold text-sm">Tanggal</p>
                         <p className="text-sm text-muted-foreground">
-                          {post.eventDate}
+                          {eventDateDisplay}
                         </p>
                       </div>
                     </div>
                   )}
-                  {post.eventTime && (
+                  {eventTimeDisplay && (
                     <div className="flex items-start gap-3">
                       <Clock className="h-4 w-4 mt-1 flex-shrink-0 text-primary" />
                       <div>
                         <p className="font-semibold text-sm">Waktu</p>
                         <p className="text-sm text-muted-foreground">
-                          {post.eventTime}
+                          {eventTimeDisplay}
                         </p>
                       </div>
                     </div>

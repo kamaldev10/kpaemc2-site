@@ -11,7 +11,7 @@ type PostCardProps = {
 export default function PostCard({ post }: PostCardProps) {
   return (
     <Link
-      href={post.href}
+      href={`/posts/${post.slug}`}
       className="group grid grid-cols-1 md:grid-cols-3 gap-6 items-start rounded-xl border bg-card p-4 hover:bg-muted/50 transition-colors duration-300"
     >
       <div className="relative w-full h-48 md:h-full rounded-lg overflow-hidden md:col-span-1">
