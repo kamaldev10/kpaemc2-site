@@ -85,7 +85,7 @@ export default function MembersManagementPage() {
   // Baca state dari URL
   const currentPage = Number(searchParams.get("page")) || 1;
   const sortKey = (searchParams.get("sort") as SortableKey) || "nomorAnggota";
-  const sortDir = (searchParams.get("dir") as "asc" | "desc") || "asc";
+  const sortDir = (searchParams.get("dir") as "asc" | "desc") || "desc";
 
   const totalPages = Math.ceil(totalMembers / MEMBERS_PER_PAGE);
 
@@ -218,10 +218,11 @@ export default function MembersManagementPage() {
 
       <Card>
         <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
+          <div className="space-y-2">
             <CardTitle>Daftar Anggota</CardTitle>
             <CardDescription>
-              Menampilkan {members.length} dari {totalMembers} total anggota.
+              Menampilkan {members.length} dari <strong> {totalMembers}</strong>{" "}
+              total anggota.
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
@@ -233,7 +234,7 @@ export default function MembersManagementPage() {
                 updateUrlParams({ sort: key, dir: dir });
               }}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[190px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
