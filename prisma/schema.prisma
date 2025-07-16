@@ -4,67 +4,52 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  // URL untuk runtime aplikasi (menggunakan connection pooler)
-  url       = env("DATABASE_URL") 
-  // URL untuk migrasi (koneksi langsung)
-  directUrl = env("DIRECT_URL") 
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
+
 model AboutInfo {
-  id           Int      @id @default(1) // Hanya akan ada satu baris, jadi ID-nya selalu 1
+  id           Int      @id @default(1)
   orgName      String
-  bornDate     String   
-  motto        String   
-  description  String   @db.Text
-  vision       String   @db.Text
-  mission      String[] // Array of strings untuk daftar misi
+  description  String
+  vision       String
+  mission      String[]
   activePeriod String
-  structure    Json     // Tipe JSON untuk menyimpan array objek struktur
-
+  structure    Json
   updatedAt    DateTime @updatedAt
+  bornDate     String   @default("10 Oktober 1984")
+  motto        String   @default("Bergerak Satu Asa, Berbekal Alam Lestari!")
 }
 
-// Model untuk semua postingan (Artikel & Event)
 model Post {
-  id               Int      @id @default(autoincrement())
+  id               Int       @id @default(autoincrement())
   title            String
-  slug             String   @unique
+  slug             String    @unique
   excerpt          String
-  description      String   @db.Text // Tipe Text untuk konten yang panjang
   imageUrl         String
-  href             String?
-  date             DateTime @default(now())
-  category         String   // "Artikel" atau "Event"
-  tags             String[] // Array of strings
+  date             DateTime  @default(now())
+  category         String
+  tags             String[]
   featured         Boolean?
-
-  // Field opsional spesifik untuk Artikel
   author           String?
-  readTime         String?  // Contoh: "5"
-
-  // Field opsional spesifik untuk Event
+  readTime         String?
   location         String?
-  eventStartDate   DateTime? 
-  eventEndDate     DateTime? 
-  price            String? 
+  price            String?
   registrationLink String?
-
-  // Timestamp otomatis
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  eventEndDate     DateTime?
+  eventStartDate   DateTime?
+  description      String
 }
 
-// Model untuk Anggota Organisasi
 model Member {
-  id            Int      @id @default(autoincrement())
-  name          String
-  nomorAnggota  String   @unique
-  
-  // Field opsional
-  jurusan       String?
-  nomorTelepon  String?
-  status        String?  // "Aktif", "Alumni", atau "Non-aktif"
-  avatarUrl     String?
-
-  // Timestamp otomatis
-  createdAt     DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  name         String
+  nomorAnggota String   @unique
+  jurusan      String?
+  nomorTelepon String?
+  status       String?
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
 }
