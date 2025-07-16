@@ -1,8 +1,8 @@
 // src/services/member.service.ts
 
-import { prisma } from "@/lib/prisma";
 import { type Member } from "@/types/Member";
 import { memberFormSchema } from "@/lib/validation/member.schema";
+import { prisma } from "@/lib/prisma";
 
 // Skema validasi menggunakan Zod
 const memberSchema = memberFormSchema;
