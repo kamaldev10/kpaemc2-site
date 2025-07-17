@@ -28,13 +28,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogTrigger,
+// } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import {
   Pagination,
@@ -65,6 +65,14 @@ import ExportMembersButton from "@/components/dashboard/members/ExportMembersBut
 import ImportMembersDialog from "@/components/dashboard/members/ImportMembersDialog";
 import MemberForm from "@/components/dashboard/members/MemberForm";
 import { type Member } from "@/types/Member"; // Disarankan memindah tipe ke folder terpusat
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const MEMBERS_PER_PAGE = 20;
 type SortableKey = "name" | "nomorAnggota" | "jurusan" | "status";
@@ -77,7 +85,7 @@ export default function MembersManagementPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [totalMembers, setTotalMembers] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isSheetOpen, setisSheetOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<Member | undefined>(
     undefined
   );
@@ -130,13 +138,18 @@ export default function MembersManagementPage() {
 
   const handleOpenForm = (member?: Member) => {
     setSelectedMember(member);
-    setIsFormOpen(true);
+    setisSheetOpen(true);
   };
+
   const handleFormSuccess = () => {
-    setIsFormOpen(false);
+    setisSheetOpen(false);
     fetchMembers();
     toast.success("Data anggota berhasil disimpan!");
   };
+
+  useEffect(() => {
+    if (!isSheetOpen) setSelectedMember(undefined);
+  }, [isSheetOpen]);
 
   const handleDelete = (member: Member) => {
     toast(`Konfirmasi Penghapusan`, {
@@ -190,29 +203,39 @@ export default function MembersManagementPage() {
         <div className="flex items-center gap-2">
           <ImportMembersDialog />
           <ExportMembersButton data={members} />
-          <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-            <DialogTrigger asChild>
-              <Button
-                size="sm"
-                className="gap-1"
-                onClick={() => handleOpenForm()}
-              >
-                <PlusCircle className="h-4 w-4" />
-                Tambah Anggota
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  {selectedMember ? "Edit Anggota" : "Tambah Anggota Baru"}
-                </DialogTitle>
-              </DialogHeader>
-              <MemberForm
-                initialData={selectedMember}
-                onSuccess={handleFormSuccess}
-              />
-            </DialogContent>
-          </Dialog>
+
+          <div>
+            <Sheet open={isSheetOpen} onOpenChange={setisSheetOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  size="sm"
+                  className="gap-1"
+                  onClick={() => handleOpenForm()}
+                >
+                  <PlusCircle className="h-4 w-4" />
+                  Tambah Anggota
+                </Button>
+              </SheetTrigger>
+
+              <SheetContent className="p-4">
+                <SheetHeader>
+                  <SheetTitle>
+                    {selectedMember ? "Edit Anggota" : "Tambah Anggota Baru"}
+                  </SheetTitle>
+                  <SheetDescription>
+                    {selectedMember
+                      ? "Perbarui data anggota di bawah ini."
+                      : "Isi formulir berikut untuk menambahkan anggota baru."}
+                  </SheetDescription>
+                </SheetHeader>
+
+                <MemberForm
+                  initialData={selectedMember}
+                  onSuccess={handleFormSuccess}
+                />
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
 
@@ -289,11 +312,13 @@ export default function MembersManagementPage() {
                 ) : (
                   members.map((member) => (
                     <TableRow key={member.id}>
-                      {" "}
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Image
-                            src={member.avatarUrl || "/images/placeholder.svg"}
+                            src={
+                              member.avatarUrl ||
+                              "/images/person-placeholder.svg"
+                            }
                             alt={member.name}
                             width={40}
                             height={40}
