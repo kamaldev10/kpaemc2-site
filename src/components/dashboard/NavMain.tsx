@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { ChevronRight, type LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils"; // <-- Impor 'cn' untuk kelas kondisional
+import { cn } from "@/lib/utils/utils"; // <-- Impor 'cn' untuk kelas kondisional
 
 import {
   Collapsible,
