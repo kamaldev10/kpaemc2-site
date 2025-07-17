@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDriveClient } from "@/lib/utils/googleDrive";
-import { bufferToStream } from "@/lib/utils/stream";
+import { type UploadApiResponse } from "cloudinary";
+import { Readable } from "stream";
 import { formatImageFilename } from "@/lib/utils/formatImageFilename";
+import { cloudinary } from "@/lib/utils/cloudinary";
+
+function bufferToStream(buffer: Buffer): Readable {
+  const readable = new Readable();
+  readable.push(buffer);
+  readable.push(null);
+  return readable;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,38 +30,50 @@ export async function POST(req: NextRequest) {
 
     if (fileSizeMB > 5) {
       return NextResponse.json(
-        { error: "File terlalu besar." },
+        {
+          error: "File terlalu besar. Konversi terlebih dahulu. Maksimal 5 MB",
+        },
         { status: 400 }
       );
     }
 
     const ext = file.name.split(".").pop() || "jpg";
-    const customFilename = formatImageFilename(name, ext);
+    const publicId = formatImageFilename(name, ext);
 
-    const drive = getDriveClient();
-    const folderId = process.env.GOOGLE_DRIVE_MEMBER_IMAGES_FOLDER_ID;
-    if (!folderId) throw new Error("Folder ID tidak diset.");
+    const uploadResult: UploadApiResponse =
+      await new Promise<UploadApiResponse>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            public_id: `member-images/${publicId}`,
+            folder: "member-images",
+            transformation: [
+              {
+                width: 500,
+                height: 500,
+                crop: "fill",
+                gravity: "auto",
+              },
+              {
+                fetch_format: "auto",
+                quality: "auto",
+              },
+            ],
+          },
+          (error, result) => {
+            if (error) return reject(error);
+            if (!result)
+              return reject(new Error("Upload gagal, result undefined."));
+            return resolve(result); // ✅ valid karena sudah dicek
+          }
+        );
 
-    const res = await drive.files.create({
-      requestBody: {
-        name: customFilename,
-        parents: [folderId],
-      },
-      media: {
-        mimeType: file.type,
-        body: bufferToStream(buffer),
-      },
-      fields: "id, webViewLink, webContentLink",
-    });
-
-    const fileData = res.data;
+        bufferToStream(buffer).pipe(uploadStream);
+      });
 
     return NextResponse.json({
       success: true,
-      fileId: fileData.id,
-      webViewLink: fileData.webViewLink,
-      webContentLink: fileData.webContentLink,
-      directUrl: `https://drive.google.com/uc?export=view&id=${fileData.id}`,
+      secureUrl: uploadResult.secure_url,
+      publicId: uploadResult.public_id,
     });
   } catch (error) {
     console.error("❌ Upload error:", error);
