@@ -35,6 +35,10 @@ export const MemberService = {
     };
   },
 
+  async findById(id: number) {
+    return await prisma.member.findUnique({ where: { id } });
+  },
+
   /**
    * Membuat anggota baru.
    * @param data - Data anggota baru yang sudah divalidasi.
