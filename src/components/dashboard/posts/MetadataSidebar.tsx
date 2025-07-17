@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { format } from "date-fns";
 import { id as localeID } from "date-fns/locale";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { CalendarIcon, Loader2, Save } from "lucide-react";
 import { type PostFormValues } from "@/lib/validation/post.schema";
 
