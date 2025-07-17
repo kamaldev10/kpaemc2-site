@@ -26,7 +26,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SlidersHorizontal, Search } from "lucide-react";
 import { type FilterState } from "@/hooks/useFilteredPosts";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 type PostFiltersProps = {
   initialFilters: FilterState;
