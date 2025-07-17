@@ -1,12 +1,28 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
-      new URL("https://cdn.rareblocks.xyz/collection/celebration/Images/**"),
-      new URL("https://images.unsplash.com/**"),
-      new URL("https://drive.google.com/**"),
+      {
+        protocol: "https",
+        hostname: "cdn.rareblocks.xyz",
+        pathname: "/collection/celebration/Images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "drive.google.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
     ],
   },
 };
