@@ -66,7 +66,7 @@ async function main() {
         ...restOfMember,
         jurusan: member.jurusan || null,
         nomorTelepon: member.nomorTelepon || null,
-        status: member.status || "Aktif",
+        status: member.status || "Anggota Biasa",
         avatarUrl: member.avatarUrl || null,
       };
     });
