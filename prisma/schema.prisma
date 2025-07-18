@@ -49,7 +49,7 @@ model Member {
   nomorAnggota String   @unique
   jurusan      String?
   nomorTelepon String?
-  status       String?
+  status       String?  // "Anggota Biasa", "Anggota Luar Biasa", "Non Aktif"
   avatarUrl    String?
   createdAt    DateTime @default(now())
 }
