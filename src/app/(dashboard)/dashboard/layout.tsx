@@ -17,7 +17,13 @@ export default function DashboardLayout({
           <AppSidebar />
           <SidebarInset>
             {children}
-            <Toaster richColors position="top-center" expand={false} />
+            <Toaster
+              closeButton
+              richColors
+              position="top-center"
+              expand={false}
+              duration={3000}
+            />
           </SidebarInset>
         </div>
       </SidebarProvider>
