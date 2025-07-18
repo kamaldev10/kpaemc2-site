@@ -3,7 +3,6 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import {
@@ -30,10 +29,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 import { formatImageFilename } from "@/lib/utils/formatImageFilename";
 import Image from "next/image";
+import { Label } from "@/components/ui/label";
 
 type MemberFormProps = {
   initialData?: Member;
@@ -44,8 +44,13 @@ export default function MemberForm({
   initialData,
   onSuccess,
 }: MemberFormProps) {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    initialData?.avatarUrl || null
+  );
+
   const isUpdateMode = !!initialData;
 
   const form = useForm<MemberFormValues>({
@@ -56,15 +61,12 @@ export default function MemberForm({
       nomorAnggota: initialData?.nomorAnggota ?? "",
       jurusan: initialData?.jurusan ?? "",
       nomorTelepon: initialData?.nomorTelepon ?? "",
-      status: initialData?.status ?? "Aktif",
+      status: initialData?.status ?? "Anggota Biasa",
       avatarUrl: initialData?.avatarUrl ?? "",
     },
   });
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    initialData?.avatarUrl || null
-  );
+  const { isValid } = form.formState;
 
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -77,15 +79,23 @@ export default function MemberForm({
 
     setSelectedFile(file);
     setImagePreview(URL.createObjectURL(file));
-    toast.success("Gambar berhasil dipilih.");
+    toast.success("Gambar berhasil diupload.");
   }
+
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    setImagePreview(null);
+    form.setValue("avatarUrl", "");
+  };
 
   async function onSubmit(values: MemberFormValues) {
     setIsLoading(true);
+    let finalAvatarUrl = values.avatarUrl;
 
     try {
       // Upload gambar jika ada file yang dipilih
       if (selectedFile) {
+        setIsUploading(true);
         const ext = selectedFile.name.split(".").pop() || "jpg";
         const customFilename = formatImageFilename(values.name, ext);
         const renamedFile = new File([selectedFile], customFilename, {
@@ -101,14 +111,29 @@ export default function MemberForm({
           body: formData,
         });
 
-        const data = await res.json();
-        if (!res.ok || !data?.secureUrl) {
-          throw new Error(data?.error || "Upload gambar gagal");
+        setIsUploading(false); // Selesai loading upload
+
+        if (!res.ok) {
+          if (res.status === 413) {
+            toast.error("Ukuran gambar terlalu besar. Maksimal 5 MB");
+          } else {
+            const errorData = await res.json();
+            toast.error("Upload Gagal", {
+              description:
+                errorData.error || "Terjadi kesalahan yang tidak diketahui.",
+            });
+          }
+          return;
         }
 
-        // Isi avatarUrl dengan secureUrl dari Cloudinary
-        values.avatarUrl = data.secureUrl;
+        const data = await res.json();
+        finalAvatarUrl = data.secureUrl; // Dapatkan URL baru dari Cloudinary
       }
+
+      const payload = {
+        ...values,
+        avatarUrl: finalAvatarUrl,
+      };
 
       // Submit ke backend
       const method = isUpdateMode ? "PUT" : "POST";
@@ -124,30 +149,28 @@ export default function MemberForm({
       const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        throw new Error("Gagal submit ke server.");
+        throw new Error("Gagal menyimpan data anggota.");
       }
 
       toast.success(
-        `Anggota "${values.name}" berhasil ${
+        `Data "${values.name}" berhasil ${
           isUpdateMode ? "diperbarui" : "ditambahkan"
         }!`
       );
-      router.refresh();
       onSuccess();
     } catch (error) {
-      console.error("❌ Gagal submit form:", error);
-      toast.error("Terjadi kesalahan. Silakan coba lagi.");
+      toast.error(
+        error instanceof Error ? error.message : "Terjadi kesalahan."
+      );
     } finally {
       setIsLoading(false);
+      setIsUploading(false);
     }
   }
-
-  const requiredFieldsFilled =
-    form.watch("name") && form.watch("nomorAnggota") && form.watch("status");
 
   return (
     <Form {...form}>
@@ -211,9 +234,11 @@ export default function MemberForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Aktif">Aktif</SelectItem>
-                  <SelectItem value="Alumni">Alumni</SelectItem>
-                  <SelectItem value="Non-aktif">Non-aktif</SelectItem>
+                  <SelectItem value="Anggota Biasa">Anggota Biasa</SelectItem>
+                  <SelectItem value="Anggota Luar Biasa">
+                    Anggota Luar Biasa
+                  </SelectItem>
+                  <SelectItem value="Non Aktif">Non Aktif</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -274,49 +299,56 @@ export default function MemberForm({
           )}
         />
 
-        <FormField
-          name="avatarUrl"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Foto Profil</FormLabel>
-              <FormControl>
-                <div className="flex items-center gap-4">
-                  {imagePreview && (
-                    <Image
-                      src={imagePreview}
-                      alt="Preview"
-                      width={64}
-                      height={64}
-                      unoptimized
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                  )}
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    disabled={isLoading}
-                    onChange={(e) => {
-                      handleImageChange(e);
-                      // Simpan file name sementara ke field (tidak terlalu penting tapi agar tidak warning)
-                      field.onChange(field.value ?? "");
-                    }}
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="space-y-2">
+          <Label>Foto Profil</Label>
+          <div className="flex items-center gap-4">
+            {imagePreview && (
+              <div className="relative w-16 h-16">
+                <Image
+                  src={imagePreview}
+                  alt="Pratinjau"
+                  fill
+                  className="rounded-full object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute -top-1 -right-1 h-6 w-6 rounded-full"
+                  onClick={handleRemoveImage}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+            <Input
+              type="file"
+              accept="image/*"
+              disabled={isLoading || isUploading}
+              onChange={handleImageChange}
+              className="flex-1"
+            />
+          </div>
+        </div>
 
-        {/* Tombol submit dengan state loading */}
         <Button
           type="submit"
-          className="w-full mt-12"
-          disabled={isLoading || !requiredFieldsFilled}
+          className="w-full mt-6"
+          disabled={isLoading || isUploading || !isValid}
         >
-          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isUpdateMode ? "Update Anggota" : "Tambah Anggota"}
+          {isUploading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Mengunggah...
+            </>
+          ) : isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Menyimpan...
+            </>
+          ) : isUpdateMode ? (
+            "Perbarui Data Anggota"
+          ) : (
+            "Tambah Anggota"
+          )}
         </Button>
       </form>
     </Form>
