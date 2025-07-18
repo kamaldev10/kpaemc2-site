@@ -1,35 +1,37 @@
-// src/app/api/admin/members/[id]/route.ts
 import { NextResponse } from "next/server";
 import { MemberService } from "@/services/member.service";
-import { z } from "zod";
 import { extractPublicId } from "@/lib/utils/cloudinary";
 import { v2 as cloudinary } from "cloudinary";
+import { ApiError, errorHandler } from "@/lib/utils/errors";
 
 type RouteParams = {
   params: { id: string };
 };
 
+/**
+ * PUT handler untuk mengupdate anggota berdasarkan ID.
+ */
 export async function PUT(request: Request, { params }: RouteParams) {
   try {
     const id = Number(params.id);
+    // const id = await Number(params.id);
     const data = await request.json();
 
-    console.log("🔧 PUT member:", { id, data });
-
-    const existing = await MemberService.findById(id);
-    if (!existing) {
-      return new NextResponse("Member not found", { status: 404 });
+    const existingMember = await MemberService.findById(id);
+    if (!existingMember) {
+      throw new ApiError(404, "Anggota tidak ditemukan");
     }
 
-    // Delete old avatar if new one is different
+    // Hapus avatar lama jika avatar baru diunggah dan berbeda
     if (
       data.avatarUrl &&
-      existing.avatarUrl &&
-      data.avatarUrl !== existing.avatarUrl
+      existingMember.avatarUrl &&
+      data.avatarUrl !== existingMember.avatarUrl
     ) {
-      const oldPublicId = extractPublicId(existing.avatarUrl);
+      const oldPublicId = extractPublicId(existingMember.avatarUrl);
       if (oldPublicId) {
-        console.log("🧹 Deleting old avatar:", oldPublicId);
+        console.log("🧹 Menghapus avatar lama:", oldPublicId);
+        // Hapus dari cloudinary tanpa menghentikan proses
         await cloudinary.uploader.destroy(oldPublicId);
       }
     }
@@ -37,12 +39,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
     const updatedMember = await MemberService.update(id, data);
     return NextResponse.json(updatedMember);
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return new NextResponse(JSON.stringify(error.issues), { status: 400 });
-    }
-
-    console.error("❌ PUT error:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return errorHandler(error);
   }
 }
 
@@ -51,25 +48,25 @@ export async function PUT(request: Request, { params }: RouteParams) {
  */
 export async function DELETE(request: Request, { params }: RouteParams) {
   try {
-    const id = await Number(params.id);
+    const id = Number(params.id);
+    // const id = await Number(params.id);
 
-    // Ambil member sebelum dihapus
-    const existing = await MemberService.findById(id);
+    // Ambil data member untuk mendapatkan URL avatar sebelum dihapus
+    const existingMember = await MemberService.findById(id);
 
-    if (existing?.avatarUrl) {
-      const publicId = extractPublicId(existing.avatarUrl);
+    if (existingMember?.avatarUrl) {
+      const publicId = extractPublicId(existingMember.avatarUrl);
       if (publicId) {
+        console.log("🧹 Menghapus avatar dari Cloudinary:", publicId);
         await cloudinary.uploader.destroy(publicId);
       }
     }
 
+    // Hapus member dari database
     await MemberService.delete(id);
+
     return new NextResponse(null, { status: 204 });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return new NextResponse(JSON.stringify(error.issues), { status: 400 });
-    }
-    console.error(`Error updating member with id ${params.id}:`, error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return errorHandler(error);
   }
 }

@@ -28,13 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
   Pagination,
@@ -57,6 +51,8 @@ import {
   Pencil,
   Trash2,
   ArrowUpDown,
+  Users,
+  GripVertical,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -73,6 +69,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 const MEMBERS_PER_PAGE = 20;
 type SortableKey = "name" | "nomorAnggota" | "jurusan" | "status";
@@ -90,6 +92,10 @@ export default function MembersManagementPage() {
     undefined
   );
 
+  // State untuk checkbox
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [isSelectAllMode, setIsSelectAllMode] = useState(false);
+
   // Baca state dari URL
   const currentPage = Number(searchParams.get("page")) || 1;
   const sortKey = (searchParams.get("sort") as SortableKey) || "nomorAnggota";
@@ -98,7 +104,6 @@ export default function MembersManagementPage() {
   const totalPages = Math.ceil(totalMembers / MEMBERS_PER_PAGE);
 
   const fetchMembers = useCallback(async () => {
-    setIsLoading(true);
     const params = new URLSearchParams({
       page: String(currentPage),
       limit: String(MEMBERS_PER_PAGE),
@@ -122,13 +127,102 @@ export default function MembersManagementPage() {
   }, [currentPage, sortKey, sortDir]);
 
   useEffect(() => {
+    setIsLoading(true);
     fetchMembers();
-  }, [fetchMembers]);
+
+    if (!isSheetOpen) setSelectedMember(undefined);
+  }, [fetchMembers, isSheetOpen]);
 
   const updateUrlParams = (newParams: Record<string, string>) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(newParams).forEach(([key, value]) => params.set(key, value));
     router.push(`/dashboard/members?${params.toString()}`);
+  };
+
+  const paginatedMembers = members; // fetchMembers sudah mengembalikan data terpaginasi
+
+  // Logika untuk menentukan status checkbox header
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setIsSelectAllMode(true);
+      setSelectedIds(new Set()); // Kosongkan pengecualian saat memilih semua
+    } else {
+      setIsSelectAllMode(false);
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectRow = (id: number, checked: boolean) => {
+    // Jika mode 'pilih semua' aktif, kita mengelola pengecualian
+    if (isSelectAllMode) {
+      const newDeselected = new Set(selectedIds);
+      if (!checked) newDeselected.add(id); // Tambah ke daftar pengecualian
+      else newDeselected.delete(id); // Hapus dari daftar pengecualian
+      setSelectedIds(newDeselected);
+    } else {
+      // Jika mode normal, kita mengelola yang dipilih
+      const newSelected = new Set(selectedIds);
+      if (checked) newSelected.add(id);
+      else newSelected.delete(id);
+      setSelectedIds(newSelected);
+    }
+  };
+
+  const handleUpdateToALB = async () => {
+    let payload;
+    let confirmationMessage;
+
+    if (isSelectAllMode) {
+      payload = {
+        ids: Array.from(selectedIds), // Kirim ID yang dikecualikan
+        status: "Anggota Luar Biasa",
+        mode: "exclude", // Mode 'kecualikan'
+      };
+      confirmationMessage = `Anda akan mengubah status SEMUA Anggota Biasa menjadi "Anggota Luar Biasa", KECUALI ${selectedIds.size} anggota. Lanjutkan?`;
+    } else {
+      const idsToUpdate = Array.from(selectedIds);
+      if (idsToUpdate.length === 0)
+        return toast.info("Tidak ada anggota yang dipilih.");
+      payload = {
+        ids: idsToUpdate, // Kirim ID yang dipilih
+        status: "Anggota Luar Biasa",
+        mode: "include", // Mode 'sertakan'
+      };
+      confirmationMessage = `Anda akan mengubah status ${idsToUpdate.length} anggota menjadi "Anggota Luar Biasa". Lanjutkan?`;
+    }
+
+    toast("Konfirmasi Aksi", {
+      description: confirmationMessage,
+      action: {
+        label: "Lanjutkan",
+        onClick: async () => {
+          try {
+            const response = await fetch(
+              "/api/admin/members/actions/bulk-update-status",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload), // Kirim payload yang sudah benar
+              }
+            );
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message);
+
+            toast.success(result.message);
+            setSelectedIds(new Set());
+            setIsSelectAllMode(false);
+            fetchMembers();
+          } catch (error) {
+            toast.error("Aksi gagal", {
+              description:
+                error instanceof Error ? error.message : "Terjadi kesalahan",
+            });
+          }
+        },
+      },
+      cancel: { label: "Batal", onClick: () => {} },
+    });
   };
 
   const handleSortChange = (key: SortableKey) => {
@@ -144,12 +238,7 @@ export default function MembersManagementPage() {
   const handleFormSuccess = () => {
     setisSheetOpen(false);
     fetchMembers();
-    toast.success("Data anggota berhasil disimpan!");
   };
-
-  useEffect(() => {
-    if (!isSheetOpen) setSelectedMember(undefined);
-  }, [isSheetOpen]);
 
   const handleDelete = (member: Member) => {
     toast(`Konfirmasi Penghapusan`, {
@@ -170,19 +259,20 @@ export default function MembersManagementPage() {
           }
         },
       },
-      // PERBAIKAN 3: Tambahkan onClick kosong pada cancel
       cancel: { label: "Batal", onClick: () => {} },
     });
   };
 
   // Fungsi getStatusVariant diperbarui untuk menangani status opsional
-  const getStatusVariant = (status?: "Aktif" | "Alumni" | "Non-aktif") => {
+  const getStatusVariant = (
+    status?: "Anggota Biasa" | "Anggota Luar Biasa" | "Non Aktif"
+  ) => {
     switch (status) {
-      case "Aktif":
+      case "Anggota Biasa":
         return "default";
-      case "Alumni":
+      case "Anggota Luar Biasa":
         return "outline";
-      case "Non-aktif":
+      case "Non Aktif":
         return "destructive";
       default:
         return "secondary";
@@ -197,23 +287,108 @@ export default function MembersManagementPage() {
             Manajemen Anggota
           </h1>
           <p className="text-sm text-muted-foreground">
-            Kelola semua data anggota organisasi Anda.
+            Kelola Data Anggota {process.env.NEXT_PUBLIC_ORG_NAME}{" "}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <ImportMembersDialog />
-          <ExportMembersButton data={members} />
+        <div className="sm:hidden">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="icon" className="h-9 w-9">
+                <GripVertical className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 p-2">
+                <Button
+                  variant="ghost"
+                  className="flex-col h-20"
+                  onClick={handleUpdateToALB}
+                  disabled={selectedIds.size === 0 && !isSelectAllMode}
+                >
+                  <Users className="h-5 w-5 mb-1" />
+                  <span className="text-xs">Ubah Status</span>
+                </Button>
+                <ImportMembersDialog />
+                <ExportMembersButton data={members} />{" "}
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+      <Separator />
+      <Card className="border-0 shadow-none">
+        <CardHeader className="flex flex-row items-center justify-between gap-4">
+          <div className=" space-y-2">
+            <CardTitle>Daftar Anggota</CardTitle>
+            <CardDescription>
+              {(() => {
+                // Hitung jumlah item yang dipilih secara akurat
+                const selectionCount = isSelectAllMode
+                  ? totalMembers - selectedIds.size
+                  : selectedIds.size;
 
-          <div>
+                // Tampilkan pesan berdasarkan apakah ada item yang dipilih atau tidak
+                if (selectionCount > 0) {
+                  return (
+                    <span>
+                      <strong className="text-primary">{selectionCount}</strong>{" "}
+                      dari {totalMembers} anggota dipilih.
+                    </span>
+                  );
+                }
+
+                // Pesan default jika tidak ada yang dipilih
+                return (
+                  <span>
+                    Menampilkan {members.length} dari{" "}
+                    <strong className="text-primary">{totalMembers}</strong>{" "}
+                    total anggota.
+                  </span>
+                );
+              })()}
+            </CardDescription>
+          </div>
+          <div className="gap-3 flex items-center">
+            {/* SORT Features */}
+            <div className="hidden sm:inline-flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Urutkan:</span>
+              <Select
+                value={`${sortKey}-${sortDir}`}
+                onValueChange={(value) => {
+                  const [key, dir] = value.split("-");
+                  updateUrlParams({ sort: key, dir: dir });
+                }}
+              >
+                <SelectTrigger className=" md:w-[190px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="nomorAnggota-asc">
+                    No. Anggota (Asc)
+                  </SelectItem>
+                  <SelectItem value="nomorAnggota-desc">
+                    No. Anggota (Desc)
+                  </SelectItem>
+                  <SelectItem value="name-asc">Nama (A-Z)</SelectItem>
+                  <SelectItem value="name-desc">Nama (Z-A)</SelectItem>
+                  <SelectItem value="jurusan-asc">Jurusan (A-Z)</SelectItem>
+                  <SelectItem value="jurusan-desc">Jurusan (Z-A)</SelectItem>
+                  <SelectItem value="status-asc">Status (A-Z)</SelectItem>
+                  <SelectItem value="status-desc">Status (Z-A)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Tombol Tambah Anggota */}
             <Sheet open={isSheetOpen} onOpenChange={setisSheetOpen}>
               <SheetTrigger asChild>
                 <Button
                   size="sm"
-                  className="gap-1"
+                  className="sm:flex items-center gap-1"
                   onClick={() => handleOpenForm()}
                 >
                   <PlusCircle className="h-4 w-4" />
-                  Tambah Anggota
+                  <span className="hidden sm:flex">Tambah Anggota</span>
                 </Button>
               </SheetTrigger>
 
@@ -235,42 +410,32 @@ export default function MembersManagementPage() {
                 />
               </SheetContent>
             </Sheet>
-          </div>
-        </div>
-      </div>
 
-      <Card>
-        <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="space-y-2">
-            <CardTitle>Daftar Anggota</CardTitle>
-            <CardDescription>
-              Menampilkan {members.length} dari <strong> {totalMembers}</strong>{" "}
-              total anggota.
-            </CardDescription>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Urutkan:</span>
-            <Select
-              value={`${sortKey}-${sortDir}`}
-              onValueChange={(value) => {
-                const [key, dir] = value.split("-");
-                updateUrlParams({ sort: key, dir: dir });
-              }}
-            >
-              <SelectTrigger className="w-[190px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="name-asc">Nama (A-Z)</SelectItem>
-                <SelectItem value="name-desc">Nama (Z-A)</SelectItem>
-                <SelectItem value="nomorAnggota-asc">
-                  No. Anggota (Asc)
-                </SelectItem>
-                <SelectItem value="nomorAnggota-desc">
-                  No. Anggota (Desc)
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Kumpulan Fitur dalam Popover */}
+            <div className="hidden sm:flex">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="icon" className="h-9 w-9">
+                    <GripVertical className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 p-2">
+                    <Button
+                      variant="ghost"
+                      className="flex-col h-20"
+                      onClick={handleUpdateToALB}
+                      disabled={selectedIds.size === 0 && !isSelectAllMode}
+                    >
+                      <Users className="h-5 w-5 mb-1" />
+                      <span className="text-xs">Ubah Status</span>
+                    </Button>
+                    <ImportMembersDialog />
+                    <ExportMembersButton data={members} />{" "}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="p-0">
@@ -278,6 +443,13 @@ export default function MembersManagementPage() {
             <Table className="min-w-xl">
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      // Checkbox header sekarang mengontrol mode 'pilih semua'
+                      onCheckedChange={handleSelectAll}
+                      checked={isSelectAllMode}
+                    />
+                  </TableHead>
                   <TableHead className="max-w-lg">
                     <Button
                       variant="ghost"
@@ -294,24 +466,45 @@ export default function MembersManagementPage() {
                       No. Anggota <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                   </TableHead>
-                  <TableHead>Jurusan</TableHead>
                   <TableHead>
-                    <Button variant="ghost">Status</Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleSortChange("jurusan")}
+                    >
+                      Jurusan <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </TableHead>
+                  <TableHead>
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleSortChange("status")}
+                    >
+                      Status <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
                   </TableHead>
                   <TableHead className="text-right">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center">
-                      <Loader2 className="h-6 w-6 animate-spin mx-auto" />{" "}
-                      Memuat data...
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  members.map((member) => (
-                    <TableRow key={member.id}>
+                {paginatedMembers.map((member) => {
+                  const isChecked = isSelectAllMode
+                    ? !selectedIds.has(member.id)
+                    : selectedIds.has(member.id);
+
+                  return (
+                    <TableRow
+                      key={member.id}
+                      data-state={isChecked ? "selected" : ""}
+                    >
+                      <TableCell>
+                        <Checkbox
+                          checked={isChecked}
+                          onCheckedChange={(checked) =>
+                            handleSelectRow(member.id, !!checked)
+                          }
+                        />
+                      </TableCell>
+
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Image
@@ -323,6 +516,7 @@ export default function MembersManagementPage() {
                             width={40}
                             height={40}
                             className="rounded-full object-cover bg-muted"
+                            loading="lazy"
                           />
                           <div>
                             <p className="font-medium">{member.name}</p>
@@ -371,12 +565,22 @@ export default function MembersManagementPage() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  ))
+                  );
+                })}
+
+                {isLoading === true && (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center">
+                      <Loader2 className="h-6 w-6 animate-spin mx-auto" />{" "}
+                      Memuat data anggota...
+                    </TableCell>
+                  </TableRow>
                 )}
               </TableBody>
             </Table>
           </div>
         </CardContent>
+
         {totalPages > 1 && (
           <CardFooter className="border-t pt-4">
             <Pagination>
