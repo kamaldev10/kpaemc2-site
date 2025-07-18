@@ -3,6 +3,7 @@ import { type UploadApiResponse } from "cloudinary";
 import { Readable } from "stream";
 import { formatImageFilename } from "@/lib/utils/formatImageFilename";
 import { cloudinary } from "@/lib/utils/cloudinary";
+import { ApiError, errorHandler } from "@/lib/utils/errors";
 
 function bufferToStream(buffer: Buffer): Readable {
   const readable = new Readable();
@@ -18,10 +19,7 @@ export async function POST(req: NextRequest) {
     const name = formData.get("name")?.toString();
 
     if (!(file instanceof Blob) || !name) {
-      return NextResponse.json(
-        { error: "File atau nama tidak valid." },
-        { status: 400 }
-      );
+      throw new ApiError(400, "File tidak ditemukan.");
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -29,12 +27,7 @@ export async function POST(req: NextRequest) {
     console.log(`📦 File size: ${fileSizeMB.toFixed(2)} MB`);
 
     if (fileSizeMB > 5) {
-      return NextResponse.json(
-        {
-          error: "File terlalu besar. Konversi terlebih dahulu. Maksimal 5 MB",
-        },
-        { status: 400 }
-      );
+      throw new ApiError(413, "Ukuran file terlalu besar. Maksimal 5 MB.");
     }
 
     const ext = file.name.split(".").pop() || "jpg";
@@ -76,7 +69,6 @@ export async function POST(req: NextRequest) {
       publicId: uploadResult.public_id,
     });
   } catch (error) {
-    console.error("❌ Upload error:", error);
-    return NextResponse.json({ error: "Upload gagal." }, { status: 500 });
+    return errorHandler(error);
   }
 }
