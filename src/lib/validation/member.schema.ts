@@ -10,7 +10,7 @@ export const memberFormSchema = z.object({
       /^\d{3}\/KPA EMC²\/\d{4}$/,
       "Format harus 3 digit/KPA EMC²/4 digit (contoh: 174/KPA EMC²/2022)"
     ),
-  status: z.enum(["Aktif", "Alumni", "Non-aktif"], {
+  status: z.enum(["Anggota Biasa", "Anggota Luar Biasa", "Non Aktif"], {
     required_error: "Anda perlu memilih status keanggotaan.",
   }),
 
