@@ -6,7 +6,7 @@ export type Member = {
   nomorAnggota: string;
   jurusan?: string;
   nomorTelepon?: string;
-  status: "Aktif" | "Alumni" | "Non-aktif";
+  status: "Anggota Biasa" | "Anggota Luar Biasa" | "Non Aktif";
   avatarUrl?: string;
 };
 
@@ -17,7 +17,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "001/KPA EMC²/1986",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -26,7 +26,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "002/KPA EMC²/1986",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -35,7 +35,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "003/KPA EMC²/1986",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -44,7 +44,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "004/KPA EMC²/1987",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -53,7 +53,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "005/KPA EMC²/1987",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -62,7 +62,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "006/KPA EMC²/1988",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -71,7 +71,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "007/KPA EMC²/1988",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -80,7 +80,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "008/KPA EMC²/1988",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -89,7 +89,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "009/KPA EMC²/1988",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -98,7 +98,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "010/KPA EMC²/1988",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -107,7 +107,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "011/KPA EMC²/1988",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -116,7 +116,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "012/KPA EMC²/1998",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -125,7 +125,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "013/KPA EMC²/1989",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -134,7 +134,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "014/KPA EMC²/1989",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -143,7 +143,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "015/KPA EMC²/1990",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -152,7 +152,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "016/KPA EMC²/1990",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -161,7 +161,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "017/KPA EMC²/1990",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -170,7 +170,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "018/KPA EMC²/1990",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -179,7 +179,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "019/KPA EMC²/1990",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -188,7 +188,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "020/KPA EMC²/1990",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -197,7 +197,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "021/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -206,7 +206,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "022/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -215,7 +215,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "023/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -224,7 +224,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "024/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -233,7 +233,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "025/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -242,7 +242,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "026/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -251,7 +251,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "027/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -260,7 +260,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "028/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -269,7 +269,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "029/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -278,7 +278,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "030/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -287,7 +287,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "031/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -296,7 +296,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "032/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -305,7 +305,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "033/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -314,7 +314,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "034/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -323,7 +323,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "035/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -332,7 +332,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "036/KPA EMC²/1991",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -341,7 +341,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "037/KPA EMC²/1992",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -350,7 +350,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "038/KPA EMC²/1992",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -359,7 +359,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "039/KPA EMC²/1992",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -368,7 +368,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "040/KPA EMC²/1992",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -377,7 +377,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "041/KPA EMC²/1993",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -386,7 +386,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "042/KPA EMC²/1993",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -395,7 +395,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "043/KPA EMC²/1993",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -404,7 +404,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "044/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -413,7 +413,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "045/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -422,7 +422,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "046/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -431,7 +431,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "047/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -440,7 +440,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "048/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -449,7 +449,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "049/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -458,7 +458,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "050/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -467,7 +467,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "051/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -476,7 +476,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "052/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -485,7 +485,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "053/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -494,7 +494,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "054/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -503,7 +503,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "055/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -512,7 +512,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "056/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -521,7 +521,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "057/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -530,7 +530,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "058/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -539,7 +539,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "059/KPA EMC²/1995",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -548,7 +548,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "060/KPA EMC²/1996",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -557,7 +557,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "061/KPA EMC²/1996",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -566,7 +566,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "062/KPA EMC²/1996",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -575,7 +575,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "063/KPA EMC²/1996",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -584,7 +584,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "064/KPA EMC²/1996",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -593,7 +593,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "065/KPA EMC²/1996",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -602,7 +602,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "066/KPA EMC²/1997",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -611,7 +611,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "067/KPA EMC²/1997",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -620,7 +620,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "068/KPA EMC²/1997",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -629,7 +629,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "069/KPA EMC²/1997",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -638,7 +638,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "070/KPA EMC²/1997",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -647,7 +647,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "071/KPA EMC²/1997",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -656,7 +656,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "072/KPA EMC²/1997",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -665,7 +665,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "073/KPA EMC²/1998",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -674,7 +674,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "074/KPA EMC²/1998",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -683,7 +683,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "075/KPA EMC²/1998",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -692,7 +692,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "076/KPA EMC²/1998",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -701,7 +701,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "077/KPA EMC²/1998",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -710,7 +710,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "078/KPA EMC²/1998",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -719,7 +719,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "079/KPA EMC²/1998",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -728,7 +728,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "080/KPA EMC²/1998",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -737,7 +737,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "081/KPA EMC²/1998",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -746,7 +746,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "082/KPA EMC²/1999",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -755,7 +755,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "083/KPA EMC²/1999",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -764,7 +764,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "084/KPA EMC²/1999",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -773,7 +773,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "085/KPA EMC²/2000",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -782,7 +782,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "086/KPA EMC²/2000",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -791,7 +791,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "087/KPA EMC²/2000",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -800,7 +800,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "088/KPA EMC²/2000",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -809,7 +809,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "089/KPA EMC²/2000",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -818,7 +818,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "090/KPA EMC²/2001",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -827,7 +827,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "091/KPA EMC²/2001",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -836,7 +836,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "092/KPA EMC²/2001",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -845,7 +845,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "093/KPA EMC²/2001",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -854,7 +854,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "094/KPA EMC²/2001",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -863,7 +863,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "095/KPA EMC²/2001",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -872,7 +872,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "096/KPA EMC²/2002",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -881,7 +881,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "097/KPA EMC²/2002",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -890,7 +890,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "098/KPA EMC²/2002",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -899,7 +899,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "099/KPA EMC²/2002",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -908,7 +908,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "100/KPA EMC²/2002",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -917,7 +917,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "101/KPA EMC²/2002",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -926,7 +926,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "102/KPA EMC²/2004",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -935,7 +935,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "103/KPA EMC²/2004",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -944,7 +944,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "104/KPA EMC²/2004",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -953,7 +953,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "105/KPA EMC²/2004",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -962,7 +962,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "106/KPA EMC²/2004",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -971,7 +971,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "107/KPA EMC²/2004",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -980,7 +980,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "108/KPA EMC²/2004",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -989,7 +989,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "109/KPA EMC²/2004",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -998,7 +998,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "110/KPA EMC²/2005",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1007,7 +1007,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "111/KPA EMC²/2005",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1016,7 +1016,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "112/KPA EMC²/2006",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1025,7 +1025,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "113/KPA EMC²/2006",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1034,7 +1034,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "114/KPA EMC²/2006",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1043,7 +1043,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "115/KPA EMC²/2006",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1052,7 +1052,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "116/KPA EMC²/2006",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1061,7 +1061,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "117/KPA EMC²/2006",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1070,7 +1070,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "118/KPA EMC²/2007",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1079,7 +1079,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "119/KPA EMC²/2007",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1088,7 +1088,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "120/KPA EMC²/2007",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1097,7 +1097,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "121/KPA EMC²/2007",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1106,7 +1106,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "122/KPA EMC²/2007",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1115,7 +1115,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "123/KPA EMC²/2007",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1124,7 +1124,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "124/KPA EMC²/2007",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1133,7 +1133,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "125/KPA EMC²/2007",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1142,7 +1142,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "126/KPA EMC²/2007",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1151,7 +1151,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "127/KPA EMC²/2007",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1160,7 +1160,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "128/KPA EMC²/2008",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1169,7 +1169,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "129/KPA EMC²/2008",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1178,7 +1178,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "130/KPA EMC²/2008",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1187,7 +1187,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "131/KPA EMC²/2008",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1196,7 +1196,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "132/KPA EMC²/2009",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1205,7 +1205,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "133/KPA EMC²/2009",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1214,7 +1214,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "134/KPA EMC²/2010",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1223,7 +1223,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "135/KPA EMC²/2010",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1232,7 +1232,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "136/KPA EMC²/2010",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1241,7 +1241,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "137/KPA EMC²/2010",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1250,7 +1250,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "138/KPA EMC²/2010",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1259,7 +1259,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "139/KPA EMC²/2010",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1268,7 +1268,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "140/KPA EMC²/2012",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1277,7 +1277,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "141/KPA EMC²/2012",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1286,7 +1286,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "142/KPA EMC²/2012",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1295,7 +1295,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "143/KPA EMC²/2013",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1304,7 +1304,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "144/KPA EMC²/2013",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1313,7 +1313,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "145/KPA EMC²/2013",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1322,7 +1322,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "146/KPA EMC²/2013",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1331,7 +1331,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "147/KPA EMC²/2013",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1340,7 +1340,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "148/KPA EMC²/2013",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1349,7 +1349,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "149/KPA EMC²/2013",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1358,7 +1358,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "150/KPA EMC²/2014",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1367,7 +1367,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "151/KPA EMC²/2014",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1376,7 +1376,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "152/KPA EMC²/2014",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1385,7 +1385,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "153/KPA EMC²/2014",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1394,7 +1394,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "154/KPA EMC²/2014",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1403,7 +1403,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "155/KPA EMC²/2014",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1412,7 +1412,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "156/KPA EMC²/2016",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1421,7 +1421,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "157/KPA EMC²/2018",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1430,7 +1430,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "158/KPA EMC²/2019",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1439,7 +1439,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "159/KPA EMC²/2019",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1448,7 +1448,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "160/KPA EMC²/2019",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1457,7 +1457,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "161/KPA EMC²/2019",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1466,7 +1466,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "162/KPA EMC²/2019",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1475,7 +1475,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "163/KPA EMC²/2019",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1484,7 +1484,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "164/KPA EMC²/2021",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1493,7 +1493,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "165/KPA EMC²/2021",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1502,7 +1502,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "166/KPA EMC²/2021",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1511,7 +1511,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "167/KPA EMC²/2021",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1520,7 +1520,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "168/KPA EMC²/2022",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1529,7 +1529,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "169/KPA EMC²/2022",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1538,7 +1538,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "170/KPA EMC²/2022",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1547,7 +1547,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "171/KPA EMC²/2022",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1556,7 +1556,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "172/KPA EMC²/2022",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1565,7 +1565,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "173/KPA EMC²/2022",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1574,7 +1574,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "174/KPA EMC²/2022",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1583,7 +1583,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "175/KPA EMC²/2023",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1592,7 +1592,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "176/KPA EMC²/2023",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1601,7 +1601,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "177/KPA EMC²/2023",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1610,7 +1610,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "178/KPA EMC²/2023",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1619,7 +1619,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "179/KPA EMC²/2023",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1628,7 +1628,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "180/KPA EMC²/2023",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1637,7 +1637,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "181/KPA EMC²/2023",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1646,7 +1646,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "182/KPA EMC²/2023",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1655,7 +1655,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "183/KPA EMC²/2023",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1664,7 +1664,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "184/KPA EMC²/2025",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1673,7 +1673,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "185/KPA EMC²/2025",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1682,7 +1682,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "186/KPA EMC²/2025",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1691,7 +1691,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "187/KPA EMC²/2025",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
   {
@@ -1700,7 +1700,7 @@ export const MembersData: Member[] = [
     nomorAnggota: "188/KPA EMC²/2025",
     jurusan: "",
     nomorTelepon: "",
-    status: "Aktif",
+    status: "Anggota Biasa",
     avatarUrl: "",
   },
 ];
