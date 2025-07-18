@@ -26,6 +26,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -75,6 +76,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import MemberCardDialog from "@/components/dashboard/members/MemberCardDialog";
 
 const MEMBERS_PER_PAGE = 20;
 type SortableKey = "name" | "nomorAnggota" | "jurusan" | "status";
@@ -102,6 +104,10 @@ export default function MembersManagementPage() {
   const sortDir = (searchParams.get("dir") as "asc" | "desc") || "desc";
 
   const totalPages = Math.ceil(totalMembers / MEMBERS_PER_PAGE);
+
+  // State Untuk Detail anggota
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [memberForDetail, setMemberForDetail] = useState<Member | null>(null);
 
   const fetchMembers = useCallback(async () => {
     const params = new URLSearchParams({
@@ -238,6 +244,11 @@ export default function MembersManagementPage() {
   const handleFormSuccess = () => {
     setisSheetOpen(false);
     fetchMembers();
+  };
+
+  const handleOpenDetail = (member: Member) => {
+    setMemberForDetail(member);
+    setIsDetailOpen(true);
   };
 
   const handleDelete = (member: Member) => {
@@ -486,10 +497,13 @@ export default function MembersManagementPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedMembers.map((member) => {
+                {paginatedMembers.map((member, index) => {
                   const isChecked = isSelectAllMode
                     ? !selectedIds.has(member.id)
                     : selectedIds.has(member.id);
+
+                  const rowNumber =
+                    (currentPage - 1) * MEMBERS_PER_PAGE + index + 1;
 
                   return (
                     <TableRow
@@ -497,12 +511,18 @@ export default function MembersManagementPage() {
                       data-state={isChecked ? "selected" : ""}
                     >
                       <TableCell>
-                        <Checkbox
-                          checked={isChecked}
-                          onCheckedChange={(checked) =>
-                            handleSelectRow(member.id, !!checked)
-                          }
-                        />
+                        {isSelectAllMode ? (
+                          <Checkbox
+                            checked={isChecked}
+                            onCheckedChange={(checked) =>
+                              handleSelectRow(member.id, !!checked)
+                            }
+                          />
+                        ) : (
+                          <span className="text-muted-foreground">
+                            {rowNumber}
+                          </span>
+                        )}
                       </TableCell>
 
                       <TableCell>
@@ -549,6 +569,12 @@ export default function MembersManagementPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
                             <DropdownMenuItem
+                              onClick={() => handleOpenDetail(member)}
+                            >
+                              Kartu Anggota
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
                               onClick={() => handleOpenForm(member)}
                             >
                               <Pencil className="mr-2 h-4 w-4" />
@@ -556,7 +582,7 @@ export default function MembersManagementPage() {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleDelete(member)}
-                              className="text-destructive focus:text-destructive"
+                              className="text-destructive"
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
                               Hapus
@@ -620,6 +646,12 @@ export default function MembersManagementPage() {
           </CardFooter>
         )}
       </Card>
+
+      <MemberCardDialog
+        member={memberForDetail}
+        isOpen={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+      />
     </div>
   );
 }
