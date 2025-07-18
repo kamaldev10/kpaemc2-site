@@ -4,6 +4,6 @@ export type Member = {
   nomorAnggota: string;
   jurusan?: string;
   nomorTelepon?: string;
-  status: "Aktif" | "Alumni" | "Non-aktif";
+  status: "Anggota Biasa" | "Anggota Luar Biasa" | "Non Aktif";
   avatarUrl?: string;
 };
