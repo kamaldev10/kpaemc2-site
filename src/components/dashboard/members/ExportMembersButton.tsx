@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { type Member } from "@/lib/data/MembersData";
+import { type Member } from "@/types/Member";
 import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
 
