@@ -92,7 +92,7 @@ export default function ContactPage() {
                   <MapPin className="h-5 w-5 mt-1 text-primary flex-shrink-0" />
                   <div className="text-muted-foreground">
                     <span className="font-semibold text-foreground">
-                      Alamat Kantor
+                      Alamat Sekretariat
                     </span>
                     <br />
                     F9HG+C7F, Jl. Unri, Simpang Baru, Kec. Tampan, Kota
