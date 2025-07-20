@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
-import { type Post } from "@/types/Post"; // Gunakan tipe terpusat
+import { type Post } from "@/types/Post";
 
 // Fungsi untuk memformat tanggal
 const formatDate = (date: string | Date) =>
@@ -84,17 +84,16 @@ export default function LatestPostsSection({ posts }: LatestPostsProps) {
                   {post.excerpt}
                 </p>
               </div>
+              <div className="mt-16 text-center">
+                <Button asChild variant="outline">
+                  <Link href={`/posts/${post.slug}`}>
+                    Lihat Detail
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
             </article>
           ))}
-        </div>
-
-        <div className="mt-16 text-center">
-          <Button asChild variant="outline">
-            <Link href="/posts">
-              Lihat Semua Postingan
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
         </div>
       </div>
     </section>
