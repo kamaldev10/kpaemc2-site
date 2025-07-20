@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { ChevronRight, type LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils/utils"; // <-- Impor 'cn' untuk kelas kondisional
+import { cn } from "@/lib/utils/utils";
 
 import {
   Collapsible,
@@ -22,10 +22,10 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-// Definisikan tipe untuk props (tidak berubah)
+// Definisikan tipe untuk props
 type NavItem = {
   title: string;
-  url: string;
+  url?: string | null;
   icon: LucideIcon;
   items?: { title: string; url: string; icon?: LucideIcon }[];
 };
@@ -42,9 +42,14 @@ export function NavMain({ items, label, pathname }: NavMainProps) {
       {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarMenu>
         {items.map((item) => {
-          const isActive = item.items
-            ? pathname.startsWith(item.url) // Untuk induk: aktif jika URL dimulai dengan path-nya
-            : pathname === item.url; // Untuk item tunggal: aktif jika URL sama persis
+          // Cek status aktif, pastikan item.url ada sebelum membandingkan
+          const isActive = item.url
+            ? item.items
+              ? pathname.startsWith(item.url)
+              : pathname === item.url
+            : false;
+
+          const LinkOrSpan = item.url ? Link : "span";
 
           return (
             <Collapsible key={item.title} asChild defaultOpen={isActive}>
@@ -52,23 +57,28 @@ export function NavMain({ items, label, pathname }: NavMainProps) {
                 <div className="flex items-center">
                   <SidebarMenuButton
                     asChild
+                    variant="default"
                     tooltip={item.title}
                     className={cn(
-                      "flex-1 justify-start",
-                      isActive && " font-semibold text-secondary-foreground" // Style untuk menu induk aktif
+                      isActive &&
+                        "bg-primary/30 hover:bg-primary/50 text-foreground cursor-pointer"
                     )}
                   >
-                    <Link href={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
+                    <CollapsibleTrigger>
+                      <LinkOrSpan
+                        className="flex items-center justify-start gap-2"
+                        href={item.url || "#"}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </LinkOrSpan>
+                    </CollapsibleTrigger>
                   </SidebarMenuButton>
 
                   {item.items && item.items.length > 0 && (
-                    <CollapsibleTrigger asChild>
+                    <CollapsibleTrigger>
                       <SidebarMenuAction className="data-[state=open]:rotate-90">
                         <ChevronRight className="h-4 w-4" />
-                        <span className="sr-only">Toggle</span>
                       </SidebarMenuAction>
                     </CollapsibleTrigger>
                   )}
@@ -78,7 +88,7 @@ export function NavMain({ items, label, pathname }: NavMainProps) {
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       {item.items.map((subItem) => {
-                        const isSubActive = pathname === subItem.url; // Cek submenu aktif
+                        const isSubActive = pathname === subItem.url;
                         return (
                           <SidebarMenuSubItem key={subItem.title}>
                             <SidebarMenuSubButton
@@ -86,8 +96,8 @@ export function NavMain({ items, label, pathname }: NavMainProps) {
                               size="sm"
                               className={cn(
                                 isSubActive &&
-                                  "bg-secondary font-semibold text-primary"
-                              )} // Style untuk submenu aktif
+                                  "bg-muted font-semibold text-foreground"
+                              )}
                             >
                               <Link href={subItem.url}>
                                 {subItem.icon && (
