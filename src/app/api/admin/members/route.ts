@@ -10,10 +10,19 @@ import { Member } from "@/types/Member";
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
+    const isExport = searchParams.get("export") === "true";
+
+    if (isExport) {
+      // Jika export, panggil getAll tanpa limit untuk mengambil semua data
+      const result = await MemberService.getAll();
+      return NextResponse.json(result.data);
+    }
+
+    // Logika pagination seperti biasa jika bukan export
     const page = Number(searchParams.get("page")) || 1;
-    const limit = Number(searchParams.get("limit")) || 10; // Default 10 per halaman
+    const limit = Number(searchParams.get("limit")) || 10;
     const sortKey = (searchParams.get("sort") as keyof Member) || "name";
-    const sortDir = (searchParams.get("dir") as "asc" | "desc") || "asc";
+    const sortDir = (searchParams.get("dir") as "asc") || "desc" || "asc";
 
     const result = await MemberService.getAll({
       page,
@@ -22,7 +31,6 @@ export async function GET(request: NextRequest) {
       sortDir,
     });
 
-    // Kirim total data melalui header untuk pagination di frontend
     return NextResponse.json(result.data, {
       headers: { "X-Total-Count": String(result.total) },
     });
