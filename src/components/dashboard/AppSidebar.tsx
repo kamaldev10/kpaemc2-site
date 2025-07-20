@@ -14,10 +14,13 @@ import {
   Send,
   BookUser,
   CircleAlert,
+  FileChartColumn,
+  Clock4,
+  Mail,
+  HandCoins,
 } from "lucide-react";
 
 import { NavMain } from "@/components/dashboard/NavMain";
-import { NavPost } from "./NavPost";
 import { NavSecondary } from "@/components/dashboard/NavSecondary";
 import { NavUser } from "@/components/dashboard/NavUser";
 import {
@@ -47,7 +50,6 @@ const data = {
     },
     {
       title: "Konten ",
-      url: "/dashboard/posts",
       icon: FileText,
       items: [
         { title: "Semua Postingan", url: "/dashboard/posts", icon: Newspaper },
@@ -56,7 +58,6 @@ const data = {
     },
     {
       title: "Internal Organisasi",
-      url: "/dashboard/members",
       icon: Users,
       items: [
         { title: "Daftar Anggota", url: "/dashboard/members", icon: BookUser },
@@ -68,15 +69,34 @@ const data = {
       ],
     },
     {
-      title: "Manajemen Sosial Media",
-      url: "/dashboard/sosmed",
+      title: "Sosial Media",
       icon: Share2,
       items: [
-        { title: "Jadwalkan Post", url: "/dashboard/sosmed/scheduler" },
-        { title: "Analitik", url: "/dashboard/sosmed/analytics" },
+        {
+          title: "Jadwalkan Post",
+          url: "/dashboard/sosmed/scheduler",
+          icon: Clock4,
+        },
+      ],
+    },
+    {
+      title: "Administrasi",
+      icon: FileChartColumn,
+      items: [
+        {
+          title: "Pengelolaan Surat",
+          url: "/dashboard/mail",
+          icon: Mail,
+        },
+        {
+          title: "pengelolaan Keuangan",
+          url: "/dashboard/finance",
+          icon: HandCoins,
+        },
       ],
     },
   ],
+
   navSecondary: [
     { title: "Publik Website", url: "/", icon: Globe },
     { title: "Pengaturan", url: "/dashboard/settings", icon: Settings },
@@ -90,28 +110,6 @@ const data = {
       title: "Feedback",
       url: "#",
       icon: Send,
-    },
-  ],
-  navPosts: [
-    {
-      name: "Pendakian Gunung Djadi",
-      url: "#",
-    },
-    {
-      name: "Purnama PA Riau 9",
-      url: "#",
-    },
-    {
-      name: "Tanaman Obat dapat membantu pencernaan",
-      url: "#",
-    },
-    {
-      name: "Korupsi dilakukan oleh DLHK Riau senilai 10M",
-      url: "#",
-    },
-    {
-      name: "Selamat Kepada 174 atas dedikasinya sebagai anggota ",
-      url: "#",
     },
   ],
 };
@@ -153,7 +151,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} pathname={pathname} />
-        <NavPost posts={data.navPosts} />
         <NavSecondary
           items={data.navSecondary}
           pathname={pathname}
