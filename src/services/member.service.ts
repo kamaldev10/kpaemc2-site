@@ -12,29 +12,26 @@ const memberSchema = memberFormSchema;
 export const MemberService = {
   /**
    * Mengambil semua anggota dengan opsi pagination dan sorting.
+   * Jika 'limit' tidak diberikan, kembalikan semua data.
    */
-  async getAll(options: {
-    page: number;
-    limit: number;
-    sortKey: keyof Member;
-    sortDir: "asc" | "desc";
+  async getAll(options?: {
+    page?: number;
+    limit?: number;
+    sortKey?: keyof Member;
+    sortDir?: "asc" | "desc";
   }) {
-    const { page, limit, sortKey, sortDir } = options;
+    const { page, limit, sortKey = "name", sortDir = "asc" } = options || {};
 
-    const members = await prisma.member.findMany({
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: {
-        [sortKey]: sortDir,
-      },
-    });
-
-    const totalMembers = await prisma.member.count();
-
-    return {
-      data: members,
-      total: totalMembers,
+    const findOptions = {
+      orderBy: { [sortKey]: sortDir },
+      skip: page && limit ? (page - 1) * limit : undefined,
+      take: limit, // Jika 'limit' undefined, Prisma akan mengambil semua
     };
+
+    const members = await prisma.member.findMany(findOptions);
+    const total = await prisma.member.count();
+
+    return { data: members, total };
   },
 
   async findById(id: number) {
@@ -119,6 +116,22 @@ export const MemberService = {
       data: { status },
     });
     return result;
+  },
+
+  /**
+   * Menambahkan beberapa anggota sekaligus ke database.
+   * Melewatkan data duplikat berdasarkan field @unique (nomorAnggota).
+   * @param members - Array berisi data anggota baru.
+   */
+  async bulkCreate(members: Partial<Member>[]) {
+    // Di sini Anda bisa menambahkan validasi Zod untuk setiap item di array jika perlu
+
+    const result = await prisma.member.createMany({
+      data: members as Member[], // Lakukan type assertion jika Anda yakin datanya cocok
+      skipDuplicates: true, // Abaikan baris yang memiliki 'nomorAnggota' yang sama
+    });
+
+    return result; // Mengembalikan objek { count: jumlah_yang_ditambahkan }
   },
 
   /**
