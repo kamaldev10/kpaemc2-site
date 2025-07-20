@@ -320,7 +320,7 @@ export default function MembersManagementPage() {
                   <span className="text-xs">Ubah Status</span>
                 </Button>
                 <ImportMembersDialog />
-                <ExportMembersButton data={members} />{" "}
+                <ExportMembersButton />{" "}
               </div>
             </PopoverContent>
           </Popover>
@@ -442,7 +442,7 @@ export default function MembersManagementPage() {
                       <span className="text-xs">Ubah Status</span>
                     </Button>
                     <ImportMembersDialog />
-                    <ExportMembersButton data={members} />{" "}
+                    <ExportMembersButton />
                   </div>
                 </PopoverContent>
               </Popover>
@@ -451,6 +451,7 @@ export default function MembersManagementPage() {
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
+            <Separator />
             <Table className="min-w-xl">
               <TableHeader>
                 <TableRow>
@@ -604,47 +605,55 @@ export default function MembersManagementPage() {
                 )}
               </TableBody>
             </Table>
+            <Separator />
           </div>
         </CardContent>
+        <p className="flex text-xs items-center">
+          <span className="font-semibold mr-2">Note:</span>
+          <Badge variant="destructive" className="mr-1">
+            {" "}
+            Non Aktif
+          </Badge>{" "}
+          dipecat, meniggal dll (bukan anggota{" "}
+          {process.env.NEXT_PUBLIC_ORG_NAME})
+        </p>
 
-        {totalPages > 1 && (
-          <CardFooter className="border-t pt-4">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    // PERBAIKAN 1: Logika pindah halaman langsung di sini
-                    onClick={() =>
-                      updateUrlParams({ page: String(currentPage - 1) })
-                    }
-                    className={
-                      currentPage === 1
-                        ? "pointer-events-none opacity-50 cursor-not-allowed"
-                        : "cursor-pointer"
-                    }
-                  />
-                </PaginationItem>
-                <PaginationItem>
-                  <span className="px-4 text-sm font-medium">
-                    Halaman {currentPage} dari {totalPages}
-                  </span>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() =>
-                      updateUrlParams({ page: String(currentPage + 1) })
-                    }
-                    className={
-                      currentPage === totalPages
-                        ? "pointer-events-none opacity-50 cursor-not-allowed"
-                        : "cursor-pointer"
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </CardFooter>
-        )}
+        <CardFooter className=" pt-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  // PERBAIKAN 1: Logika pindah halaman langsung di sini
+                  onClick={() =>
+                    updateUrlParams({ page: String(currentPage - 1) })
+                  }
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <span className="px-4 text-sm font-medium">
+                  Halaman {currentPage} dari {totalPages}
+                </span>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    updateUrlParams({ page: String(currentPage + 1) })
+                  }
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </CardFooter>
       </Card>
 
       <MemberCardDialog
