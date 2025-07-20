@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,12 +11,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Upload, FileCheck2 } from "lucide-react";
+import { Upload, FileCheck2, Loader2 } from "lucide-react";
 import * as XLSX from "xlsx";
-import { type Member } from "@/lib/data/MembersData"; // <-- 1. Impor tipe Member
+import { type Member } from "@/types/Member";
+import { toast } from "sonner";
 
 export default function ImportMembersDialog() {
+  const router = useRouter();
   const [importedData, setImportedData] = useState<Partial<Member>[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -24,15 +29,11 @@ export default function ImportMembersDialog() {
     const reader = new FileReader();
     reader.onload = (event) => {
       if (!event.target?.result) return;
-
       const data = new Uint8Array(event.target.result as ArrayBuffer);
       const workbook = XLSX.read(data, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-
-      // Beri tahu TypeScript bahwa hasil json adalah array dari objek yang mirip Member
       const json: Partial<Member>[] = XLSX.utils.sheet_to_json(worksheet);
-
       setImportedData(json);
     };
     reader.readAsArrayBuffer(file);
@@ -44,26 +45,50 @@ export default function ImportMembersDialog() {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
         ".xlsx",
       ],
-      "text/csv": [".csv"],
     },
     maxFiles: 1,
   });
 
-  const handleProcessImport = () => {
-    // Di aplikasi nyata, kirim 'importedData' ke backend
-    console.log("Data yang akan diproses:", importedData);
-    alert(`${importedData.length} data anggota siap diimpor! (Cek console)`);
-    setImportedData([]); // Reset
+  const handleProcessImport = async () => {
+    setIsProcessing(true);
+    try {
+      // Kirim data ke backend
+      const response = await fetch("/api/admin/members/actions/bulk-import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(importedData),
+      });
+
+      const result = await response.json();
+      if (!response.ok)
+        throw new Error(result.message || "Gagal mengimpor data.");
+
+      toast.success(result.message);
+      setIsOpen(false);
+      router.refresh();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Terjadi kesalahan."
+      );
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
+  const resetState = () => setImportedData([]);
+
   return (
-    <Dialog onOpenChange={() => setImportedData([])}>
-      {" "}
-      {/* Reset saat modal ditutup/dibuka */}
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) resetState();
+      }}
+    >
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-1">
-          <Upload className="h-4 w-4" />
-          Import
+        <Button variant="ghost" className="flex-col h-20 w-full">
+          <Upload className="h-5 w-5 mb-1" />
+          <span className="text-xs">Import Excel</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -88,8 +113,15 @@ export default function ImportMembersDialog() {
             <p className="font-semibold">
               {importedData.length} baris data ditemukan dan siap diimpor.
             </p>
-            <Button onClick={handleProcessImport} className="mt-4">
-              Proses Import
+            <Button
+              onClick={handleProcessImport}
+              className="mt-4"
+              disabled={isProcessing}
+            >
+              {isProcessing && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              {isProcessing ? "Memproses..." : "Proses Import"}
             </Button>
           </div>
         )}
