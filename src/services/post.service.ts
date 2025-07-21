@@ -236,27 +236,36 @@ export const PostService = {
    */
   async update(slug: string, formData: FormData) {
     const file = formData.get("file") as File | null;
-    let imageUrl = formData.get("imageUrl") as string;
     const title = formData.get("title") as string;
+    let imageUrl = formData.get("imageUrl") as string;
 
+    // 1. Ambil data postingan yang ada untuk mendapatkan URL gambar lama
     const existingPost = await prisma.post.findUnique({ where: { slug } });
     if (!existingPost) {
       throw new ApiError(404, "Postingan tidak ditemukan.");
     }
 
-    // 1. Jika ada file baru, unggah dan hapus yang lama
+    // 2. Jika ada file BARU yang diunggah
     if (file) {
+      // Unggah gambar baru ke Cloudinary
       imageUrl = await uploadImageToCloudinary(file, title);
-      // Hapus gambar lama dari Cloudinary jika ada
+
+      // Hapus gambar LAMA dari Cloudinary jika ada
       if (existingPost.imageUrl) {
         const oldPublicId = extractPublicId(existingPost.imageUrl);
         if (oldPublicId) {
-          await cloudinary.uploader.destroy(oldPublicId);
+          console.log(
+            `🧹 Menghapus gambar lama dari Cloudinary: ${oldPublicId}`
+          );
+          // Perintah destroy tidak perlu di-await jika tidak kritis
+          cloudinary.uploader.destroy(oldPublicId).catch((err) => {
+            console.error("Gagal menghapus gambar lama di Cloudinary:", err);
+          });
         }
       }
     }
 
-    // 2. Kumpulkan data untuk divalidasi
+    // 3. Kumpulkan data untuk divalidasi
     const dataToValidate = {
       title: formData.get("title"),
       slug: formData.get("slug"),
@@ -279,13 +288,12 @@ export const PostService = {
       eventEndDate_Time: formData.get("eventEndDate_Time"),
       price: formData.get("price"),
       registrationLink: formData.get("registrationLink"),
-      imageUrl: imageUrl, // Gunakan URL final (dari upload atau yang sudah ada)
+      imageUrl: imageUrl, // Gunakan URL final (bisa yang baru, bisa yang lama)
     };
 
-    // 3. Validasi dan transformasi data
     const validatedData = postUpdateSchema.parse(dataToValidate);
 
-    // 4. Update di database
+    // 4. Update database dengan URL gambar yang baru
     return await prisma.post.update({ where: { slug }, data: validatedData });
   },
 
