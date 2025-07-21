@@ -1,8 +1,8 @@
 // src/app/api/admin/posts/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { PostService } from "@/services/post.service";
-import { z } from "zod";
 import { FilterState } from "@/hooks/useFilteredPosts";
+import { errorHandler } from "@/lib/utils/errors";
 
 // GET: Mengambil semua postingan
 export async function GET(request: NextRequest) {
@@ -30,20 +30,17 @@ export async function GET(request: NextRequest) {
       headers: { "X-Total-Count": String(result.total) },
     });
   } catch (error) {
-    console.error("Error fetching public posts:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return errorHandler(error);
   }
 }
+
 // POST: Membuat postingan baru
 export async function POST(request: Request) {
   try {
-    const data = await request.json();
-    const newPost = await PostService.create(data);
+    const formData = await request.formData();
+    const newPost = await PostService.create(formData);
     return NextResponse.json(newPost, { status: 201 });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return new NextResponse(JSON.stringify(error.issues), { status: 400 });
-    }
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return errorHandler(error);
   }
 }
