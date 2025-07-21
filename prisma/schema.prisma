@@ -32,7 +32,7 @@ model Post {
   tags             String[]
   featured         Boolean?
   author           String?
-  readTime         String?
+  readTime         Int?
   location         String?
   price            String?
   registrationLink String?
