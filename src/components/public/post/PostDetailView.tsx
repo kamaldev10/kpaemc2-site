@@ -110,7 +110,7 @@ export default function PostDetailView({ post }: PostDetailProps) {
 
       {/* Konten Utama */}
       <div className="mx-auto max-w-4xl px-4 md:px-6 py-8">
-        <BackButton />
+        <BackButton>Kembali</BackButton>
         {/* Meta Info Bar */}
         <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted-foreground mb-6 py-4 border-y">
           <div className="flex items-center gap-2">
@@ -130,10 +130,9 @@ export default function PostDetailView({ post }: PostDetailProps) {
             </div>
           )}
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-4 lg:gap-8">
           <div className={isEvent ? "lg:col-span-3" : "lg:col-span-4"}>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
+            <div className="prose prose-lg dark:prose-invert max-w-none text-justify indent-6">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {Array.isArray(post.description)
                   ? post.description.join("\n\n")
@@ -155,7 +154,7 @@ export default function PostDetailView({ post }: PostDetailProps) {
                       <Calendar className="h-4 w-4 mt-1 flex-shrink-0 text-primary" />
                       <div>
                         <p className="font-semibold text-sm">Tanggal</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                           {eventDateDisplay}
                         </p>
                       </div>
@@ -166,7 +165,7 @@ export default function PostDetailView({ post }: PostDetailProps) {
                       <Clock className="h-4 w-4 mt-1 flex-shrink-0 text-primary" />
                       <div>
                         <p className="font-semibold text-sm">Waktu</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-xs">
                           {eventTimeDisplay}
                         </p>
                       </div>
@@ -177,7 +176,7 @@ export default function PostDetailView({ post }: PostDetailProps) {
                       <MapPin className="h-4 w-4 mt-1 flex-shrink-0 text-primary" />
                       <div>
                         <p className="font-semibold text-sm">Lokasi</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-muted-foreground text-xs">
                           {post.location}
                         </p>
                       </div>
@@ -200,8 +199,9 @@ export default function PostDetailView({ post }: PostDetailProps) {
                         href={post.registrationLink}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="text-xs"
                       >
-                        <ExternalLink className="mr-2 h-4 w-4" />
+                        <ExternalLink className="mr-1 h-4 w-4" />
                         Daftar Sekarang
                       </Link>
                     </Button>
@@ -211,7 +211,6 @@ export default function PostDetailView({ post }: PostDetailProps) {
             </aside>
           )}
         </div>
-
         {post.tags && post.tags.length > 0 && (
           <div className="mt-12 border-t pt-6">
             <div className="flex flex-wrap items-center gap-3">
