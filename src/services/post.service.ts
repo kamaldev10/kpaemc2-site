@@ -1,11 +1,89 @@
 // src/services/post.service.ts
-import { FilterState } from "@/hooks/useFilteredPosts";
-import { prisma } from "@/lib/prisma";
+
+/**
+ * @file src/services/post.service.ts
+ * @description Service layer untuk semua logika bisnis dan interaksi database terkait Postingan.
+ * Menangani upload gambar, validasi data, dan operasi CRUD.
+ */
+
+import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
+import { Readable } from "stream";
+
 import {
   postCreateSchema,
   postUpdateSchema,
-} from "@/lib/validation/post.schema"; // <-- Impor skema
+} from "@/lib/validation/post.schema";
+import { formatImageFilename } from "@/lib/utils/formatImageFilename";
+import { extractPublicId } from "@/lib/utils/cloudinary";
+import { ApiError } from "@/lib/utils/errors";
+import { FilterState } from "@/hooks/useFilteredPosts";
 import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+
+// --- Helper Functions ---
+
+/**
+ * Mengubah Buffer menjadi Readable Stream untuk diunggah ke Cloudinary.
+ * @param buffer - Buffer data file.
+ */
+function bufferToStream(buffer: Buffer): Readable {
+  const readable = new Readable({
+    read() {
+      this.push(buffer);
+      this.push(null);
+    },
+  });
+  return readable;
+}
+
+/**
+ * Helper internal untuk mengunggah file ke Cloudinary dengan validasi dan transformasi.
+ * @param file - Objek File yang akan diunggah.
+ * @param title - Judul postingan, digunakan untuk membuat nama file.
+ * @returns URL aman dari gambar yang sudah diunggah dan dioptimasi.
+ */
+async function uploadImageToCloudinary(
+  file: File,
+  title: string
+): Promise<string> {
+  // 1. Validasi ukuran file
+  if (file.size > 5 * 1024 * 1024) {
+    // 5 MB
+    throw new ApiError(413, "Ukuran file terlalu besar. Maksimal 5 MB.");
+  }
+
+  // 2. Buat nama file yang unik dan bersih
+  const publicId = formatImageFilename(title, file.name);
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  // 3. Proses upload ke Cloudinary
+  const uploadResult = await new Promise<UploadApiResponse>(
+    (resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          public_id: publicId,
+          folder: "post-images",
+          transformation: [
+            { width: 1200, crop: "limit" }, // Resize gambar, maks lebar 1200px
+            { quality: "auto:good" }, // Kompresi kualitas otomatis
+            { fetch_format: "auto" }, // Format file otomatis (webp/avif)
+          ],
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          if (!result)
+            return reject(
+              new Error("Upload gagal, tidak ada hasil dari Cloudinary.")
+            );
+          resolve(result);
+        }
+      );
+      bufferToStream(buffer).pipe(uploadStream);
+    }
+  );
+
+  return uploadResult.secure_url;
+}
 
 export const PostService = {
   // Mengambil semua postingan dengan opsi
@@ -105,27 +183,110 @@ export const PostService = {
   },
 
   /**
-   * Membuat postingan baru setelah validasi dan transformasi data.
-   * @param data - Data mentah dari request API.
+   * Membuat postingan baru. Menangani upload gambar dan validasi data.
+   * @param formData - Data dari form yang berisi teks dan file.
    */
-  async create(data: unknown) {
-    const validatedAndTransformedData = postCreateSchema.parse(data);
-    return await prisma.post.create({
-      data: validatedAndTransformedData,
-    });
+  async create(formData: FormData) {
+    const file = formData.get("file") as File | null;
+    let imageUrl = formData.get("imageUrl") as string; // URL yang ada (jika tidak ada file baru)
+    const title = formData.get("title") as string;
+
+    // 1. Jika ada file baru, unggah ke Cloudinary
+    if (file) {
+      imageUrl = await uploadImageToCloudinary(file, title);
+    }
+
+    // 2. Kumpulkan semua data teks dari form untuk divalidasi
+    const dataToValidate = {
+      title: formData.get("title"),
+      slug: formData.get("slug"),
+      excerpt: formData.get("excerpt"),
+      description: formData.get("description"),
+      date: new Date(formData.get("date") as string),
+      category: formData.get("category"),
+      tags: formData.get("tags"),
+      featured: formData.get("featured") === "true",
+      author: formData.get("author"),
+      readTime: formData.get("readTime"),
+      location: formData.get("location"),
+      eventStartDate_Date: formData.get("eventStartDate_Date")
+        ? new Date(formData.get("eventStartDate_Date") as string)
+        : undefined,
+      eventStartDate_Time: formData.get("eventStartDate_Time"),
+      eventEndDate_Date: formData.get("eventEndDate_Date")
+        ? new Date(formData.get("eventEndDate_Date") as string)
+        : undefined,
+      eventEndDate_Time: formData.get("eventEndDate_Time"),
+      price: formData.get("price"),
+      registrationLink: formData.get("registrationLink"),
+      imageUrl: imageUrl, // Gunakan URL final (dari upload atau yang sudah ada)
+    };
+
+    // 3. Validasi dan transformasi data
+    const validatedData = postCreateSchema.parse(dataToValidate);
+
+    // 4. Simpan ke database
+    return await prisma.post.create({ data: validatedData });
   },
 
   /**
-   * Mengupdate postingan berdasarkan slug.
+   * Mengupdate postingan. Menangani upload gambar baru dan penghapusan gambar lama.
    * @param slug - Slug dari postingan yang akan diupdate.
-   * @param data - Data mentah dari request API yang akan diupdate.
+   * @param formData - Data dari form yang berisi teks dan file.
    */
-  async update(slug: string, data: unknown) {
-    const validatedAndTransformedData = postUpdateSchema.parse(data);
-    return await prisma.post.update({
-      where: { slug },
-      data: validatedAndTransformedData,
-    });
+  async update(slug: string, formData: FormData) {
+    const file = formData.get("file") as File | null;
+    let imageUrl = formData.get("imageUrl") as string;
+    const title = formData.get("title") as string;
+
+    const existingPost = await prisma.post.findUnique({ where: { slug } });
+    if (!existingPost) {
+      throw new ApiError(404, "Postingan tidak ditemukan.");
+    }
+
+    // 1. Jika ada file baru, unggah dan hapus yang lama
+    if (file) {
+      imageUrl = await uploadImageToCloudinary(file, title);
+      // Hapus gambar lama dari Cloudinary jika ada
+      if (existingPost.imageUrl) {
+        const oldPublicId = extractPublicId(existingPost.imageUrl);
+        if (oldPublicId) {
+          await cloudinary.uploader.destroy(oldPublicId);
+        }
+      }
+    }
+
+    // 2. Kumpulkan data untuk divalidasi
+    const dataToValidate = {
+      title: formData.get("title"),
+      slug: formData.get("slug"),
+      excerpt: formData.get("excerpt"),
+      description: formData.get("description"),
+      date: new Date(formData.get("date") as string),
+      category: formData.get("category"),
+      tags: formData.get("tags"),
+      featured: formData.get("featured") === "true",
+      author: formData.get("author"),
+      readTime: formData.get("readTime"),
+      location: formData.get("location"),
+      eventStartDate_Date: formData.get("eventStartDate_Date")
+        ? new Date(formData.get("eventStartDate_Date") as string)
+        : undefined,
+      eventStartDate_Time: formData.get("eventStartDate_Time"),
+      eventEndDate_Date: formData.get("eventEndDate_Date")
+        ? new Date(formData.get("eventEndDate_Date") as string)
+        : undefined,
+      eventEndDate_Time: formData.get("eventEndDate_Time"),
+      price: formData.get("price"),
+      registrationLink: formData.get("registrationLink"),
+      imageUrl: imageUrl, // Gunakan URL final (dari upload atau yang sudah ada)
+    };
+
+    // 3. Validasi dan transformasi data
+    const validatedData = postUpdateSchema.parse(dataToValidate);
+
+    // 4. Update di database
+    return await prisma.post.update({ where: { slug }, data: validatedData });
   },
 
   // Menghapus postingan berdasarkan slug
