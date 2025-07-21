@@ -17,6 +17,7 @@ import {
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -452,17 +453,26 @@ export default function MembersManagementPage() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Separator />
-            <Table className="min-w-xl">
+            <Table className="max-w-dvh sm:max-w-full">
+              <TableCaption>
+                <p className="flex text-xs items-center">
+                  <span className="font-semibold mr-2">Note:</span>
+                  <Badge variant="destructive" className="mr-1">
+                    Non Aktif
+                  </Badge>
+                  dipecat, meniggal dll (bukan anggota{" "}
+                  {process.env.NEXT_PUBLIC_ORG_NAME})
+                </p>
+              </TableCaption>
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">
+                <TableRow className="items-center justify-center-safe">
+                  <TableHead className="max-w-12 ">
                     <Checkbox
-                      // Checkbox header sekarang mengontrol mode 'pilih semua'
                       onCheckedChange={handleSelectAll}
                       checked={isSelectAllMode}
                     />
                   </TableHead>
-                  <TableHead className="max-w-lg">
+                  <TableHead className="max-w-2/6">
                     <Button
                       variant="ghost"
                       onClick={() => handleSortChange("name")}
@@ -470,7 +480,7 @@ export default function MembersManagementPage() {
                       Nama <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                   </TableHead>
-                  <TableHead>
+                  <TableHead className="max-w-1/6">
                     <Button
                       variant="ghost"
                       onClick={() => handleSortChange("nomorAnggota")}
@@ -478,7 +488,7 @@ export default function MembersManagementPage() {
                       No. Anggota <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                   </TableHead>
-                  <TableHead>
+                  <TableHead className="max-w-1/6">
                     <Button
                       variant="ghost"
                       onClick={() => handleSortChange("jurusan")}
@@ -486,7 +496,7 @@ export default function MembersManagementPage() {
                       Jurusan <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                   </TableHead>
-                  <TableHead>
+                  <TableHead className="max-w-1/6">
                     <Button
                       variant="ghost"
                       onClick={() => handleSortChange("status")}
@@ -510,6 +520,7 @@ export default function MembersManagementPage() {
                     <TableRow
                       key={member.id}
                       data-state={isChecked ? "selected" : ""}
+                      className="items-center justify-items-center-safe w-full text-xs sm:text-sm"
                     >
                       <TableCell>
                         {isSelectAllMode ? (
@@ -526,25 +537,24 @@ export default function MembersManagementPage() {
                         )}
                       </TableCell>
 
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Image
-                            src={
-                              member.avatarUrl ||
-                              "/images/person-placeholder.svg"
-                            }
-                            alt={member.name}
-                            width={40}
-                            height={40}
-                            className="rounded-full object-cover bg-muted"
-                            loading="lazy"
-                          />
-                          <div>
-                            <p className="font-medium">{member.name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {member.nomorTelepon || "-"}
-                            </p>
-                          </div>
+                      <TableCell className="flex items-center gap-3 w-2/6 sm:w-full ">
+                        <Image
+                          src={
+                            member.avatarUrl || "/images/person-placeholder.svg"
+                          }
+                          alt={member.name}
+                          width={40}
+                          height={40}
+                          className="rounded-full object-cover bg-muted"
+                          loading="lazy"
+                        />
+                        <div className="">
+                          <p className="font-medium text-ellipsis md:text-clip">
+                            {member.name}
+                          </p>
+                          <p className="  text-muted-foreground">
+                            {member.nomorTelepon || "-"}
+                          </p>
                         </div>
                       </TableCell>
                       <TableCell>
@@ -608,15 +618,6 @@ export default function MembersManagementPage() {
             <Separator />
           </div>
         </CardContent>
-        <p className="flex text-xs items-center">
-          <span className="font-semibold mr-2">Note:</span>
-          <Badge variant="destructive" className="mr-1">
-            {" "}
-            Non Aktif
-          </Badge>{" "}
-          dipecat, meniggal dll (bukan anggota{" "}
-          {process.env.NEXT_PUBLIC_ORG_NAME})
-        </p>
 
         <CardFooter className=" pt-4">
           <Pagination>
