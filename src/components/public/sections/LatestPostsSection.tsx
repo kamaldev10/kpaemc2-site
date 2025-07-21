@@ -84,16 +84,16 @@ export default function LatestPostsSection({ posts }: LatestPostsProps) {
                   {post.excerpt}
                 </p>
               </div>
-              <div className="mt-16 text-center">
-                <Button asChild variant="outline">
-                  <Link href={`/posts/${post.slug}`}>
-                    Lihat Detail
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
             </article>
           ))}
+        </div>
+        <div className="mt-4 sm:mt-16 text-center">
+          <Button asChild variant="outline">
+            <Link href="/posts">
+              Selengkapnya
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
