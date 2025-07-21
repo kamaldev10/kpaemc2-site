@@ -13,7 +13,7 @@ export type Post = {
 
   // Field Artikel
   author?: string | null;
-  readTime?: string | null;
+  readTime?: number | null;
 
   // Field Event
   location?: string | null;
