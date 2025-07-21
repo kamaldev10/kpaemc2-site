@@ -14,7 +14,7 @@ export type Post = {
 
   // Field Artikel
   author?: string;
-  readTime?: string;
+  readTime?: number;
 
   // Field Event
   location?: string;
@@ -58,7 +58,7 @@ export const PostsData: Post[] = [
     date: "2024-02-19",
     category: "Artikel",
     author: "Ali Musthafa Kamal",
-    readTime: "3 menit",
+    readTime: 3,
     tags: ["sampah", "fakta", "artikel"],
     featured: true,
   },
@@ -93,7 +93,7 @@ export const PostsData: Post[] = [
     date: "2024-02-06",
     category: "Artikel",
     author: "Ali Musthafa Kamal",
-    readTime: "5 menit",
+    readTime: 3,
     tags: ["srt", "gua", "artikel"],
     featured: true,
   },
