@@ -15,5 +15,5 @@ export function formatImageFilename(name: string, originalFilename: string) {
   const now = new Date();
   const timestamp = now.toISOString().replace(/[-:T]/g, "").slice(0, 13); // YYYYMMDDHHmm (13 karakter)
 
-  return `${sanitizedName}-${timestamp}.${validExtension}`;
+  return `${sanitizedName}-${timestamp}`;
 }
