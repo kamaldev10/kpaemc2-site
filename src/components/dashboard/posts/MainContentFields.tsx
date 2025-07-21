@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Control } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { type PostFormValues } from "@/lib/validation/post.schema";
 
 // Impor komponen UI
@@ -16,25 +16,23 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+// import { toTitleCase } from "@/lib/utils/utils";
 
-// Impor Markdown Editor secara dinamis untuk performa
 const MarkdownEditor = dynamic(
   () => import("@/components/shared/MarkdownEditor"),
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-40 bg-muted rounded-md animate-pulse" />
+      <div className="w-full h-[400px] bg-muted rounded-md animate-pulse" />
     ),
   }
 );
 
-// Tipe untuk props komponen
-type MainContentFieldsProps = {
-  // Menerima 'control' dari useForm di komponen induk
-  control: Control<PostFormValues>;
-};
+// Komponen ini tidak lagi memerlukan props
+export default function MainContentFields() {
+  // Ambil 'control' dari konteks yang disediakan oleh FormProvider
+  const { control } = useFormContext<PostFormValues>();
 
-export default function MainContentFields({ control }: MainContentFieldsProps) {
   return (
     <Card>
       <CardHeader>
@@ -43,13 +41,21 @@ export default function MainContentFields({ control }: MainContentFieldsProps) {
       <CardContent className="space-y-6">
         <FormField
           name="title"
+          control={control}
           render={({ field }) => (
             <FormItem>
               <FormLabel>
                 Judul <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder="Judul Postingan Anda..." {...field} />
+                <Input
+                  placeholder="Judul Postingan Anda..."
+                  {...field}
+                  // onBlur={(e) => {
+                  //   field.onBlur(); // Jalankan onBlur bawaan
+                  //   field.onChange(toTitleCase(e.target.value)); // Ubah nilai menjadi Title Case
+                  // }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -59,16 +65,14 @@ export default function MainContentFields({ control }: MainContentFieldsProps) {
           name="slug"
           control={control}
           render={({ field }) => (
-            <FormItem className="hidden">
+            <FormItem className="sr-only">
               <FormLabel>
                 Slug <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
                 <Input disabled placeholder="judul-postingan-unik" {...field} />
               </FormControl>
-              <FormDescription>
-                Bagian Otomatis dari URL yang unik.
-              </FormDescription>
+              <FormDescription>Dibuat otomatis dari judul.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

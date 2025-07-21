@@ -1,27 +1,20 @@
 "use client";
-
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
-// Impor logika & tipe
+// Impor
 import {
   postFormInputSchema,
-  postCreateSchema,
-  postUpdateSchema,
   type PostFormValues,
 } from "@/lib/validation/post.schema";
-
 import { type Post } from "@/types/Post";
-
-// Impor komponen UI
-import { Form } from "@/components/ui/form";
 import MainContentFields from "./MainContentFields";
 import MetadataSidebar from "./MetadataSidebar";
-import z from "zod";
-import { generateSlug } from "@/lib/utils/generateSlugUtils";
+import { generateSlug } from "@/lib/utils/utils";
+import ImageUploadModal from "@/components/shared/ImageUploadModal";
 import { sanitizePostInitialData } from "@/lib/utils/sanitizePostInitialData";
 
 type PostFormProps = {
@@ -31,23 +24,33 @@ type PostFormProps = {
 export default function AdminPostForm({ initialData }: PostFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // State untuk menyimpan FILE yang akan diunggah dan URL PRATINJAU-nya
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    initialData?.imageUrl || null
+  );
+
   const isUpdateMode = !!initialData;
 
   const form = useForm<PostFormValues>({
-    // Gunakan skema input mentah untuk resolver
     resolver: zodResolver(postFormInputSchema),
+
     defaultValues: initialData
       ? sanitizePostInitialData(initialData)
       : {
+          // Nilai default untuk form baru
           title: "",
           slug: "",
           excerpt: "",
           description: "",
           imageUrl: "",
-          date: new Date(),
           category: "Artikel",
+          date: new Date(),
           tags: "",
           featured: false,
+          readTime: undefined, // Pastikan nilai awalnya undefined atau number
         },
     mode: "onChange",
   });
@@ -55,7 +58,6 @@ export default function AdminPostForm({ initialData }: PostFormProps) {
   const watchedTitle = form.watch("title");
 
   useEffect(() => {
-    // 2. Logika ini sekarang menggunakan fungsi yang diimpor dan tidak berubah
     if (watchedTitle && !form.formState.dirtyFields.slug) {
       const newSlug = generateSlug(watchedTitle);
       form.setValue("slug", newSlug, { shouldValidate: true });
@@ -64,14 +66,46 @@ export default function AdminPostForm({ initialData }: PostFormProps) {
 
   const category = form.watch("category");
 
-  // onSubmit menerima nilai MENTAH sesuai tipe PostFormValues
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    setImagePreview(null);
+    form.setValue("imageUrl", "");
+  };
+
+  const onError = (errors: unknown) => {
+    console.error("FORM VALIDATION ERRORS:", errors);
+    toast.error("Validasi Gagal", {
+      description:
+        "Silakan periksa kembali semua field yang wajib diisi dan pastikan formatnya benar.",
+    });
+  };
+
   async function onSubmit(values: PostFormValues) {
     setIsLoading(true);
     try {
-      // Pilih skema yang tepat untuk validasi & transformasi akhir
-      const schemaToUse = isUpdateMode ? postUpdateSchema : postCreateSchema;
-      const validatedAndTransformedData = schemaToUse.parse(values);
+      // 1. Buat satu FormData untuk semua data (teks dan file)
+      const formData = new FormData();
 
+      // 2. Tambahkan semua data teks dari form ke FormData
+      Object.entries(values).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          // Konversi nilai non-string jika perlu
+          if (value instanceof Date) {
+            formData.append(key, value.toISOString());
+          } else if (typeof value === "boolean") {
+            formData.append(key, String(value));
+          } else {
+            formData.append(key, value as string);
+          }
+        }
+      });
+
+      // 3. Jika ada file baru yang dipilih, tambahkan ke FormData
+      if (selectedFile) {
+        formData.append("file", selectedFile);
+      }
+
+      // 4. Kirim satu request tunggal ke API
       const method = isUpdateMode ? "PUT" : "POST";
       const url = isUpdateMode
         ? `/api/admin/posts/${initialData.slug}`
@@ -79,11 +113,13 @@ export default function AdminPostForm({ initialData }: PostFormProps) {
 
       const response = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(validatedAndTransformedData),
+        body: formData, // Kirim FormData, bukan JSON
       });
 
-      if (!response.ok) throw new Error("Gagal menyimpan postingan.");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Gagal menyimpan data.");
+      }
 
       toast.success(
         `Postingan berhasil ${isUpdateMode ? "diperbarui" : "disimpan"}!`
@@ -91,40 +127,44 @@ export default function AdminPostForm({ initialData }: PostFormProps) {
       router.push("/dashboard/posts");
       router.refresh();
     } catch (error) {
-      // Menampilkan error validasi Zod dengan lebih baik
-      if (error instanceof z.ZodError) {
-        toast.error("Validasi gagal", {
-          description: error.errors
-            .map((e) => `${e.path.join(".")}: ${e.message}`)
-            .join("\n"),
-        });
-      } else {
-        toast.error(
-          error instanceof Error ? error.message : "Terjadi kesalahan."
-        );
-      }
+      toast.error(
+        error instanceof Error ? error.message : "Terjadi kesalahan."
+      );
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <Form {...form}>
+    <FormProvider {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, onError)}
         className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start"
       >
         <div className="lg:col-span-2 space-y-8">
-          <MainContentFields control={form.control} />
+          <MainContentFields />
         </div>
         <MetadataSidebar
           control={form.control}
-          setValue={form.setValue}
           isUpdate={isUpdateMode}
           category={category as "Artikel" | "Event"}
+          imagePreview={imagePreview}
+          imageFilename={selectedFile?.name}
+          onImageSelectClick={() => setIsModalOpen(true)}
+          onImageRemove={handleRemoveImage}
           isLoading={isLoading}
+          isTitleFilled={!!watchedTitle}
+        />
+        <ImageUploadModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onFileSelect={(file) => {
+            setSelectedFile(file);
+            setImagePreview(URL.createObjectURL(file));
+            form.setValue("imageUrl", file.name, { shouldValidate: true });
+          }}
         />
       </form>
-    </Form>
+    </FormProvider>
   );
 }

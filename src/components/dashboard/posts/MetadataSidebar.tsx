@@ -1,12 +1,11 @@
 "use client";
 
-import { UseFormReturn, Control } from "react-hook-form"; // Impor tipe Control
+import { Control } from "react-hook-form";
 import Image from "next/image";
-import { useState } from "react";
 import { format } from "date-fns";
 import { id as localeID } from "date-fns/locale";
 import { cn } from "@/lib/utils/utils";
-import { CalendarIcon, Loader2, Save } from "lucide-react";
+import { CalendarIcon, Loader2, Save, X } from "lucide-react";
 import { type PostFormValues } from "@/lib/validation/post.schema";
 
 // Komponen UI...
@@ -29,28 +28,36 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import ImageUploadModal from "@/components/shared/ImageUploadModal";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-// ===============================================
-// PERBAIKAN: Ubah props 'form' menjadi lebih spesifik
-// ===============================================
 type MetadataSidebarProps = {
-  control: Control<PostFormValues>; // Terima 'control' secara langsung
-  setValue: UseFormReturn<PostFormValues>["setValue"]; // Terima 'setValue' secara langsung
+  control: Control<PostFormValues>;
   isUpdate: boolean;
   category?: "Artikel" | "Event";
   isLoading: boolean;
+  imagePreview: string | null;
+  onImageSelectClick: () => void;
+  onImageRemove: () => void;
+  imageFilename?: string | null;
+  isTitleFilled: boolean; // <-- Prop baru
 };
 
 export default function MetadataSidebar({
   control,
-  setValue,
   isUpdate,
   category,
   isLoading,
+  imagePreview,
+  onImageSelectClick,
+  onImageRemove,
+  imageFilename,
+  isTitleFilled,
 }: MetadataSidebarProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   return (
     <div className="lg:col-span-1 space-y-8">
       {/* Kartu Publikasi */}
@@ -69,45 +76,69 @@ export default function MetadataSidebar({
           </Button>
         </CardContent>
       </Card>
+
       {/* Kartu Properti */}
       <Card>
         <CardHeader>
           <CardTitle>Properti Postingan</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Semua FormField sekarang menggunakan 'control' dari props */}
-          <FormField
-            name="imageUrl"
-            control={control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gambar Unggulan</FormLabel>
-                <FormControl>
-                  <>
-                    {field.value && (
-                      <div className="relative w-full h-40 rounded-lg overflow-hidden border">
-                        <Image
-                          src={field.value}
-                          alt="Pratinjau"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    )}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => setIsModalOpen(true)}
-                    >
-                      {field.value ? "Ganti Gambar" : "Pilih Gambar"}
-                    </Button>
-                  </>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div>
+            <FormItem>
+              <FormLabel>Gambar Unggulan</FormLabel>
+              {imagePreview && (
+                <div className="relative w-full h-40 rounded-lg overflow-hidden border">
+                  <Image
+                    src={imagePreview}
+                    alt="Pratinjau"
+                    fill
+                    className="object-cover"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2 h-7 w-7 rounded-full"
+                    onClick={onImageRemove} // Panggil handler dari props
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    {/* Bungkus tombol dengan div agar tooltip tetap muncul saat disabled */}
+                    <div className="w-full">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => isTitleFilled && onImageSelectClick()} // Panggil hanya jika aktif
+                        disabled={!isTitleFilled} // <-- Tombol non-aktif jika judul kosong
+                      >
+                        {imageFilename ? (
+                          <span className="truncate">{imageFilename}</span>
+                        ) : imagePreview ? (
+                          "Ganti Gambar"
+                        ) : (
+                          "Unggah Gambar"
+                        )}{" "}
+                      </Button>
+                    </div>
+                  </TooltipTrigger>
+                  {!isTitleFilled && (
+                    <TooltipContent>
+                      <p>Silakan isi judul terlebih dahulu.</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+              <FormMessage />
+            </FormItem>
+          </div>
+
           <FormField
             name="category"
             control={control}
@@ -406,7 +437,18 @@ export default function MetadataSidebar({
                 <FormItem>
                   <FormLabel>Waktu Baca (menit)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="5" {...field} />
+                    {/* Input ini sudah benar, pastikan tidak ada perubahan */}
+                    <Input
+                      type="number"
+                      placeholder="5"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === "" ? undefined : e.target.value
+                        )
+                      }
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -415,13 +457,6 @@ export default function MetadataSidebar({
           </CardContent>
         </Card>
       )}
-      <ImageUploadModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onUploadComplete={(url) => {
-          setValue("imageUrl", url, { shouldValidate: true });
-        }}
-      />{" "}
     </div>
   );
 }
