@@ -1,38 +1,42 @@
 import { format } from "date-fns";
-import { Post } from "@/types/Post";
-import { PostFormValues } from "@/lib/validation/post.schema";
+import { type Post } from "@/types/Post";
+import { type PostFormValues } from "@/lib/validation/post.schema";
 
-export function sanitizePostInitialData(initialData: Post): PostFormValues {
+/**
+ * Membersihkan dan memformat data Post dari database agar cocok
+ * dengan nilai default yang diharapkan oleh AdminPostForm.
+ * @param post - Data postingan dari database.
+ * @returns Objek yang siap digunakan sebagai defaultValues di react-hook-form.
+ */
+export function sanitizePostInitialData(post: Post): PostFormValues {
   return {
-    title: initialData.title ?? "",
-    slug: initialData.slug ?? "",
-    excerpt: initialData.excerpt ?? "",
-    description: Array.isArray(initialData.description)
-      ? initialData.description.join("\n\n")
-      : initialData.description ?? "",
-    imageUrl: initialData.imageUrl ?? "",
-    date: initialData.date ? new Date(initialData.date) : new Date(),
-    category: initialData.category ?? "Artikel",
-    tags: Array.isArray(initialData.tags)
-      ? initialData.tags.join(", ")
-      : initialData.tags ?? "",
-    featured: initialData.featured ?? false,
-    author: initialData.author ?? undefined,
-    location: initialData.location ?? undefined,
-    price: initialData.price ?? undefined,
-    registrationLink: initialData.registrationLink ?? undefined,
+    ...post,
+    date: new Date(post.date),
+    tags: Array.isArray(post.tags) ? post.tags.join(", ") : "",
+    description: Array.isArray(post.description)
+      ? post.description.join("\n\n")
+      : post.description,
 
-    eventStartDate_Date: initialData.eventStartDate
-      ? new Date(initialData.eventStartDate)
+    // PERBAIKAN UTAMA: Konversi null/undefined menjadi nilai default yang valid
+    featured: post.featured ?? false,
+    author: post.author ?? "",
+    readTime: post.readTime ?? undefined,
+    location: post.location ?? "",
+    price: post.price ?? "",
+    registrationLink: post.registrationLink ?? "",
+
+    // Pisahkan DateTime menjadi Date dan Time untuk form
+    eventStartDate_Date: post.eventStartDate
+      ? new Date(post.eventStartDate)
       : undefined,
-    eventStartDate_Time: initialData.eventStartDate
-      ? format(new Date(initialData.eventStartDate), "HH:mm")
+    eventStartDate_Time: post.eventStartDate
+      ? format(new Date(post.eventStartDate), "HH:mm")
       : "",
-    eventEndDate_Date: initialData.eventEndDate
-      ? new Date(initialData.eventEndDate)
+    eventEndDate_Date: post.eventEndDate
+      ? new Date(post.eventEndDate)
       : undefined,
-    eventEndDate_Time: initialData.eventEndDate
-      ? format(new Date(initialData.eventEndDate), "HH:mm")
+    eventEndDate_Time: post.eventEndDate
+      ? format(new Date(post.eventEndDate), "HH:mm")
       : "",
   };
 }
