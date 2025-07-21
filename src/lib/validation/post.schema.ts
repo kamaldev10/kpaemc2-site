@@ -10,13 +10,17 @@ export const postFormInputSchema = z.object({
     .regex(/^[a-z0-9-]+$/, "Hanya huruf kecil, angka, dan strip."),
   excerpt: z.string().min(20).max(250),
   description: z.string().min(50),
-  imageUrl: z.string().url(),
+  imageUrl: z.string().min(1, "Gambar unggulan wajib dipilih."),
   date: z.date(),
   category: z.string().min(1),
   tags: z.string().min(1),
   featured: z.boolean().default(false),
   author: z.string().optional(),
-  readTime: z.string().optional(),
+  readTime: z.coerce
+    .number()
+    .int("Harus angka bulat")
+    .positive("Harus angka positif")
+    .optional(),
   location: z.string().optional(),
   eventStartDate_Date: z.date().optional(),
   eventStartDate_Time: z
@@ -42,6 +46,7 @@ export const postCreateSchema = postFormInputSchema.transform((data) => {
     eventStartDate_Time,
     eventEndDate_Date,
     eventEndDate_Time,
+    readTime,
     ...rest
   } = data;
 
@@ -71,15 +76,18 @@ export const postCreateSchema = postFormInputSchema.transform((data) => {
             .map((t: string) => t.trim())
             .filter(Boolean)
         : [],
-    description:
-      typeof description === "string"
-        ? description
-            .split("\n\n")
-            .map((p: string) => p.trim())
-            .filter(Boolean)
-        : [],
+    // description:
+    //   typeof description === "string"
+    //     ? description
+    //         .split("\n\n")
+    //         .map((p: string) => p.trim())
+    //         .filter(Boolean)
+    //     : [],
+
+    description,
     eventStartDate,
     eventEndDate,
+    readTime,
   };
 });
 
@@ -93,6 +101,7 @@ export const postUpdateSchema = postFormInputSchema
       eventStartDate_Time,
       eventEndDate_Date,
       eventEndDate_Time,
+      readTime,
       ...rest
     } = data;
 
@@ -124,13 +133,14 @@ export const postUpdateSchema = postFormInputSchema
             .filter(Boolean)
         : undefined;
 
-    const transformedDescription =
-      typeof description === "string"
-        ? description
-            .split("\n\n")
-            .map((p: string) => p.trim())
-            .filter(Boolean)
-        : undefined;
+    // const transformedDescription =
+    //   typeof description === "string"
+    //     ? description
+    //         .split("\n\n")
+    //         .map((p: string) => p.trim())
+    //         .filter(Boolean)
+    //     : undefined;
+    const transformedDescription = description;
 
     return {
       ...rest,
@@ -138,6 +148,7 @@ export const postUpdateSchema = postFormInputSchema
       description: transformedDescription,
       eventStartDate,
       eventEndDate,
+      readTime,
     };
   });
 
