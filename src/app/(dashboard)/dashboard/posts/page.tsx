@@ -147,7 +147,7 @@ function PostsPageContent() {
             });
             if (!response.ok) throw new Error("Gagal menghapus.");
             toast.success(`Postingan "${post.title}" telah dihapus.`);
-            router.refresh();
+            fetchPosts();
           } catch (error) {
             toast.error("Gagal menghapus postingan.");
             console.log(error);
@@ -219,14 +219,16 @@ function PostsPageContent() {
                         <Image
                           alt={post.title}
                           className="aspect-square rounded-md object-cover"
-                          height="64"
+                          height={32}
+                          width={64}
                           src={post.imageUrl}
-                          width="64"
                         />
                       </TableCell>
-                      <TableCell>
-                        <div className="font-semibold">{post.title}</div>
-                        <div className="text-xs text-muted-foreground line-clamp-2">
+                      <TableCell className="max-w-md">
+                        <div className="font-semibold truncate">
+                          {post.title}
+                        </div>
+                        <div className="text-xs text-muted-foreground line-clamp-2 text-wrap">
                           {post.excerpt}
                         </div>
                       </TableCell>
