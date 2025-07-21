@@ -176,7 +176,7 @@ export default function PostDetailView({ post }: PostDetailProps) {
                       <MapPin className="h-4 w-4 mt-1 flex-shrink-0 text-primary" />
                       <div>
                         <p className="font-semibold text-sm">Lokasi</p>
-                        <p className="text-sm text-muted-foreground text-xs">
+                        <p className=" text-muted-foreground text-xs">
                           {post.location}
                         </p>
                       </div>
