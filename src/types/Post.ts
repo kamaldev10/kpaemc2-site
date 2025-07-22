@@ -4,7 +4,7 @@ export type Post = {
   slug: string;
   excerpt: string;
   description: string;
-  descruptionSource: string | null;
+  descriptionSource: string | null;
   imageUrl: string;
   imageSource: string | null;
   date: Date | string;
