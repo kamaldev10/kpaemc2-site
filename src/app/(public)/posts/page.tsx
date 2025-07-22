@@ -109,6 +109,21 @@ function PostsPageContent() {
       day: "numeric",
     });
 
+  const getCategoryBadgeVariant = (category: string) => {
+    switch (category) {
+      case "Artikel":
+        return "secondary";
+      case "Kegiatan":
+        return "default";
+      case "Rilis Kegiatan":
+        return "release";
+      case "Kolaborasi":
+        return "collaboration";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
     <section className="bg-background">
       <div className="max-w-6xl mx-auto px-4 py-16 sm:py-24">
@@ -125,7 +140,7 @@ function PostsPageContent() {
         <PostFilters
           initialFilters={filters}
           onApplyFilters={handleApplyFilters}
-          uniqueYears={["2025", "2024", "2023", "2022", "2021"]}
+          uniqueYears={["2026", "2025", "2024"]}
         />
 
         <div className="mt-12 min-h-[50vh]">
@@ -155,11 +170,7 @@ function PostsPageContent() {
                   {/* Kolom Konten Teks */}
                   <div className="md:col-span-8 flex flex-col h-full">
                     <div className="flex flex-wrap items-center gap-x-4 text-xs mb-2">
-                      <Badge
-                        variant={
-                          post.category === "Event" ? "default" : "secondary"
-                        }
-                      >
+                      <Badge variant={getCategoryBadgeVariant(post.category)}>
                         {post.category}
                       </Badge>
                       <time

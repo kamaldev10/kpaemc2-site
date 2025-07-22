@@ -165,6 +165,21 @@ function PostsPageContent() {
       day: "numeric",
     });
 
+  const getCategoryBadgeVariant = (category: string) => {
+    switch (category) {
+      case "Artikel":
+        return "secondary";
+      case "Kegiatan":
+        return "default";
+      case "Rilis Kegiatan":
+        return "release";
+      case "Kolaborasi":
+        return "collaboration";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
       <div className="flex items-center">
@@ -233,11 +248,7 @@ function PostsPageContent() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge
-                          variant={
-                            post.category === "Event" ? "default" : "secondary"
-                          }
-                        >
+                        <Badge variant={getCategoryBadgeVariant(post.category)}>
                           {post.category}
                         </Badge>
                       </TableCell>
@@ -332,11 +343,7 @@ function PostsPageContent() {
                   {/* Konten teks di bawah gambar */}
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-                      <Badge
-                        variant={
-                          post.category === "Event" ? "default" : "secondary"
-                        }
-                      >
+                      <Badge variant={getCategoryBadgeVariant(post.category)}>
                         {post.category}
                       </Badge>
                       <time
