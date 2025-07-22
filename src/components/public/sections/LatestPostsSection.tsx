@@ -24,6 +24,21 @@ export default function LatestPostsSection({ posts }: LatestPostsProps) {
     return null;
   }
 
+  const getCategoryBadgeVariant = (category: string) => {
+    switch (category) {
+      case "Artikel":
+        return "secondary";
+      case "Kegiatan":
+        return "default";
+      case "Rilis Kegiatan":
+        return "release";
+      case "Kolaborasi":
+        return "collaboration";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
     <section className="bg-background py-16 sm:py-24">
       <div className="mx-auto max-w-screen-xl px-4 md:px-6">
@@ -66,11 +81,7 @@ export default function LatestPostsSection({ posts }: LatestPostsProps) {
                   >
                     {formatDate(post.date)}
                   </time>
-                  <Badge
-                    variant={
-                      post.category === "Event" ? "default" : "secondary"
-                    }
-                  >
+                  <Badge variant={getCategoryBadgeVariant(post.category)}>
                     {post.category}
                   </Badge>
                 </div>
