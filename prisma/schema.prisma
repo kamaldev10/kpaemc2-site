@@ -22,25 +22,22 @@ model AboutInfo {
 }
 
 model Post {
-  id               Int       @id @default(autoincrement())
-  title            String
-  slug             String    @unique
-  excerpt          String
-  imageUrl         String
-  date             DateTime  @default(now())
-  category         String
-  tags             String[]
-  featured         Boolean?
-  author           String?
-  readTime         Int?
-  location         String?
-  price            String?
-  registrationLink String?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  eventEndDate     DateTime?
-  eventStartDate   DateTime?
-  description      String
+  id                Int       @id @default(autoincrement())
+  title             String
+  slug              String    @unique
+  excerpt           String
+  imageUrl          String
+  imageSource       String?
+  date              DateTime  @default(now())
+  category          String
+  tags              String[]
+  featured          Boolean?
+  author            String?
+  description       String
+  descriptionSource String?
+
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
 }
 
 model Member {
