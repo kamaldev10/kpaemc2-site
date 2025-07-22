@@ -9,6 +9,21 @@ type PostCardProps = {
 };
 
 export default function PostCard({ post }: PostCardProps) {
+  const getCategoryBadgeVariant = (category: string) => {
+    switch (category) {
+      case "Artikel":
+        return "secondary";
+      case "Kegiatan":
+        return "default";
+      case "Rilis Kegiatan":
+        return "release";
+      case "Kolaborasi":
+        return "collaboration";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
     <Link
       href={`/posts/${post.slug}`}
@@ -24,7 +39,7 @@ export default function PostCard({ post }: PostCardProps) {
       </div>
       <div className="flex flex-col h-full md:col-span-2">
         <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-          <Badge variant={post.category === "Event" ? "default" : "secondary"}>
+          <Badge variant={getCategoryBadgeVariant(post.category)}>
             {post.category}
           </Badge>
           <span>
