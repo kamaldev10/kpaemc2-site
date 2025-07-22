@@ -56,7 +56,7 @@ export default function HeroSection({ posts }: HeroSectionProps) {
           {posts.map((post, index) => (
             <div
               key={post.id}
-              className="relative h-[85dvh] min-w-0 flex-[0_0_100%]"
+              className="relative h-[95dvh] min-w-0 flex-[0_0_100%]"
             >
               <Image
                 src={post.imageUrl}
