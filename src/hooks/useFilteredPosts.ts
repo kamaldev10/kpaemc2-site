@@ -5,7 +5,13 @@ import fuzzysort from "fuzzysort";
 export type FilterState = {
   search: string;
   year: string;
-  category: "Artikel" | "Event" | "all";
+  category:
+    | "Artikel"
+    | "Kegiatan"
+    | "Rilis Kegiatan"
+    | "Kolaborasi"
+    | "Pengalaman Pribadi"
+    | "all";
   featured: boolean;
 };
 
