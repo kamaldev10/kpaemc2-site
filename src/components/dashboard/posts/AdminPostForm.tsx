@@ -45,12 +45,13 @@ export default function AdminPostForm({ initialData }: PostFormProps) {
           slug: "",
           excerpt: "",
           description: "",
+          descriptionSource: "",
           imageUrl: "",
-          category: "Artikel",
+          imageSource: "",
+          category: "Kegiatan",
           date: new Date(),
           tags: "",
           featured: false,
-          readTime: undefined, // Pastikan nilai awalnya undefined atau number
         },
     mode: "onChange",
   });
@@ -63,8 +64,6 @@ export default function AdminPostForm({ initialData }: PostFormProps) {
       form.setValue("slug", newSlug, { shouldValidate: true });
     }
   }, [watchedTitle, form.setValue, form.formState.dirtyFields.slug, form]);
-
-  const category = form.watch("category");
 
   const handleRemoveImage = () => {
     setSelectedFile(null);
@@ -147,7 +146,6 @@ export default function AdminPostForm({ initialData }: PostFormProps) {
         <MetadataSidebar
           control={form.control}
           isUpdate={isUpdateMode}
-          category={category as "Artikel" | "Event"}
           imagePreview={imagePreview}
           imageFilename={selectedFile?.name}
           onImageSelectClick={() => setIsModalOpen(true)}

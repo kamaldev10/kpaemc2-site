@@ -19,7 +19,6 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Popover,
   PopoverContent,
@@ -34,11 +33,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type MetadataSidebarProps = {
   control: Control<PostFormValues>;
   isUpdate: boolean;
-  category?: "Artikel" | "Event";
   isLoading: boolean;
   imagePreview: string | null;
   onImageSelectClick: () => void;
@@ -50,7 +56,6 @@ type MetadataSidebarProps = {
 export default function MetadataSidebar({
   control,
   isUpdate,
-  category,
   isLoading,
   imagePreview,
   onImageSelectClick,
@@ -140,6 +145,27 @@ export default function MetadataSidebar({
           </div>
 
           <FormField
+            name="imageSource"
+            control={control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sumber Gambar</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Contoh: Foto Bersama Kegiatan Pengabdian"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription className="text-xs">
+                  Isi dengan sumber gambar atau deskripsi singkat (maksimal 10
+                  kata) .
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
             name="category"
             control={control}
             render={({ field }) => (
@@ -148,29 +174,33 @@ export default function MetadataSidebar({
                   Kategori <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    className="flex space-x-4"
-                  >
-                    <FormItem className="flex items-center space-x-2 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="Artikel" />
-                      </FormControl>
-                      <FormLabel className="font-normal">Artikel</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-2 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="Event" />
-                      </FormControl>
-                      <FormLabel className="font-normal">Event</FormLabel>
-                    </FormItem>
-                  </RadioGroup>
+                  <SelectGroup>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih Kategori" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Artikel">Artikel</SelectItem>
+                        <SelectItem value="Kegiatan">Kegiatan</SelectItem>
+                        <SelectItem value="Rilis Kegiatan">
+                          Rilis Kegiatan
+                        </SelectItem>
+                        <SelectItem value="Kolaborasi">Kolaborasi</SelectItem>
+                        <SelectItem value="Pengalaman Pribadi">
+                          Pengalaman Pribadi
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </SelectGroup>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             name="date"
             control={control}
@@ -222,9 +252,25 @@ export default function MetadataSidebar({
                 <FormControl>
                   <Input placeholder="Teknologi, Karir, ..." {...field} />
                 </FormControl>
-                <FormDescription>
+                <FormDescription className="text-xs">
                   Pisahkan setiap tag dengan koma.
                 </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="author"
+            control={control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Penulis <span className="text-destructive">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder="Nama Penulis" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -236,8 +282,10 @@ export default function MetadataSidebar({
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                 <div className="space-y-0.5">
-                  <FormLabel>Postingan Utama</FormLabel>
-                  <FormDescription>Tampilkan di highlight.</FormDescription>
+                  <FormLabel>Postingan Unggulan</FormLabel>
+                  <FormDescription>
+                    Tampilkan di highlight website.
+                  </FormDescription>
                 </div>
                 <FormControl>
                   <Switch
@@ -250,213 +298,6 @@ export default function MetadataSidebar({
           />
         </CardContent>
       </Card>
-      {/* Field Kondisional untuk Event */}
-      {category === "Event" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Detail Event</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <FormField
-              name="location"
-              control={control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Lokasi</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Online / Gedung X" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Waktu Mulai Acara */}
-            <div className="space-y-2">
-              <FormLabel>Waktu Mulai Acara</FormLabel>
-              <div className="flex gap-2">
-                <FormField
-                  name="eventStartDate_Date"
-                  control={control}
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full justify-start text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pilih tanggal</span>
-                              )}
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="eventStartDate_Time"
-                  control={control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input type="time" {...field} className="w-[100px]" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            {/* Waktu Selesai Acara */}
-            <div className="space-y-2">
-              <FormLabel>Waktu Selesai Acara</FormLabel>
-              <div className="flex gap-2">
-                <FormField
-                  name="eventEndDate_Date"
-                  control={control}
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full justify-start text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pilih tanggal</span>
-                              )}
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="eventEndDate_Time"
-                  control={control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input type="time" {...field} className="w-[100px]" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <FormField
-              name="price"
-              control={control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Harga Tiket</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Gratis / 150000" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="registrationLink"
-              control={control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Link Pendaftaran</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-      )}
-      {/* Kartu Detail Artikel Kondisional */}
-      {category === "Artikel" && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Detail Artikel</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <FormField
-              name="author"
-              control={control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Penulis</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nama Penulis" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="readTime"
-              control={control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Waktu Baca (menit)</FormLabel>
-                  <FormControl>
-                    {/* Input ini sudah benar, pastikan tidak ada perubahan */}
-                    <Input
-                      type="number"
-                      placeholder="5"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value === "" ? undefined : e.target.value
-                        )
-                      }
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

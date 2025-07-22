@@ -83,14 +83,11 @@ export default function MainContentFields() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Kutipan Singkat (Excerpt){" "}
+                Kutipan Singkat (Excerpt)
                 <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Ringkasan singkat untuk tampilan kartu..."
-                  {...field}
-                />
+                <Textarea placeholder="Ringkasan singkat ..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -108,12 +105,29 @@ export default function MainContentFields() {
                 <MarkdownEditor
                   value={field.value as string}
                   onChange={field.onChange}
-                  height={400}
+                  height={590}
                 />
               </FormControl>
-              <FormDescription>
-                Gunakan sintaks Markdown untuk formatting.
+              <FormDescription className="text-xs">
+                Gunakan sintaks Markdown untuk memformat tulisan.
               </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name="descriptionSource"
+          control={control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Sumber</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Contoh: kompas.com atau https:instagram.com/kpaemc2/9281g8has9dh21ge87weh8aba8"
+                  {...field}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
