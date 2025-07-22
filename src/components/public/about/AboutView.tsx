@@ -1,17 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+// import { useState } from "react";
+// import Image from "next/image";
 import { motion } from "framer-motion";
-import { type About, type StructureInfo } from "@/types/AboutInfo";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
+// import { type About, type StructureInfo } from "@/types/AboutInfo";
+import { type About } from "@/types/AboutInfo";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
+// import { Card, CardContent } from "@/components/ui/card";
 import { Quote, Milestone } from "lucide-react";
 
 type AboutViewProps = {
@@ -20,17 +21,17 @@ type AboutViewProps = {
 
 export default function AboutView({ aboutData }: AboutViewProps) {
   // PERBAIKAN: Type assertion untuk 'structure'
-  const structureArray = (aboutData.structure as StructureInfo[]) || [];
+  // const structureArray = (aboutData.structure as StructureInfo[]) || [];
 
-  const periods = structureArray
-    .map((s) => s.period)
-    .sort((a, b) => Number(b) - Number(a));
+  // const periods = structureArray
+  //   .map((s) => s.period)
+  //   .sort((a, b) => Number(b) - Number(a));
 
-  const [selectedPeriod, setSelectedPeriod] = useState(aboutData.activePeriod);
+  // const [selectedPeriod, setSelectedPeriod] = useState(aboutData.activePeriod);
 
-  const currentStructureData = structureArray.find(
-    (s) => s.period === selectedPeriod
-  );
+  // const currentStructureData = structureArray.find(
+  //   (s) => s.period === selectedPeriod
+  // );
 
   return (
     <div className="max-w-5xl px-4 py-16 mx-auto space-y-20 sm:py-24">
@@ -99,7 +100,7 @@ export default function AboutView({ aboutData }: AboutViewProps) {
       </motion.section>
 
       {/* Section Struktur Kepengurusan */}
-      <section>
+      {/* <section>
         <div className="text-center mb-10">
           <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
             Struktur Kepengurusan
@@ -139,7 +140,7 @@ export default function AboutView({ aboutData }: AboutViewProps) {
             )}
           </CardContent>
         </Card>
-      </section>
+      </section> */}
     </div>
   );
 }

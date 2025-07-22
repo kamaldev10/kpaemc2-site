@@ -1,7 +1,7 @@
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { AboutService } from "@/services/about.service";
-import { type StructureInfo } from "@/types/AboutInfo";
+// import { type StructureInfo } from "@/types/AboutInfo";
 
 // Impor komponen UI
 import { Button } from "@/components/ui/button";
@@ -33,7 +33,7 @@ export default async function AboutDashboardPage() {
   }
 
   // Type assertion untuk 'structure'
-  const structureArray = (aboutData.structure as StructureInfo[]) || [];
+  // const structureArray = (aboutData.structure as StructureInfo[]) || [];
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
@@ -106,7 +106,7 @@ export default async function AboutDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle>Struktur Kepengurusan Aktif</CardTitle>
           </CardHeader>
@@ -130,7 +130,7 @@ export default async function AboutDashboardPage() {
               </p>
             )}
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );
