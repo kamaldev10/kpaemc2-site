@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+// import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -112,11 +112,16 @@ export default function PostFilters({
           <SelectContent>
             <SelectItem value="all">Kategori</SelectItem>
             <SelectItem value="Artikel">Artikel</SelectItem>
-            <SelectItem value="Event">Event</SelectItem>
+            <SelectItem value="Kegiatan">Kegiatan</SelectItem>
+            <SelectItem value="Rilis Kegiatan">Rilis Kegiatan</SelectItem>
+            <SelectItem value="Kolaborasi">Kolaborasi</SelectItem>
+            <SelectItem value="Pengalaman Pribadi">
+              Pengalaman Pribadi
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
-      <div className="flex items-center space-x-2 pt-4">
+      {/* <div className="flex items-center space-x-2 pt-4">
         <Checkbox
           id="featured"
           checked={localFilters.featured}
@@ -127,7 +132,7 @@ export default function PostFilters({
         <Label htmlFor="featured" className="text-sm font-medium">
           Hanya tampilkan yang utama
         </Label>
-      </div>
+      </div> */}
     </>
   );
 
@@ -172,11 +177,16 @@ export default function PostFilters({
           <SelectContent>
             <SelectItem value="all">Kategori</SelectItem>
             <SelectItem value="Artikel">Artikel</SelectItem>
-            <SelectItem value="Event">Event</SelectItem>
+            <SelectItem value="Kegiatan">Kegiatan</SelectItem>
+            <SelectItem value="Rilis Kegiatan">Rilis Kegiatan</SelectItem>
+            <SelectItem value="Kolaborasi">Kolaborasi</SelectItem>
+            <SelectItem value="Pengalaman Pribadi">
+              Pengalaman Pribadi
+            </SelectItem>
           </SelectContent>
         </Select>
         <Separator orientation="vertical" className="h-6" />
-        <div className="flex items-center space-x-2 pl-2">
+        {/* <div className="flex items-center space-x-2 pl-2">
           <Checkbox
             id="featured-desktop"
             checked={localFilters.featured}
@@ -187,7 +197,7 @@ export default function PostFilters({
           <Label htmlFor="featured-desktop" className="text-sm font-medium">
             Featured
           </Label>
-        </div>
+        </div> */}
         <Button onClick={handleApply} className="rounded-full">
           Terapkan
         </Button>
@@ -204,7 +214,7 @@ export default function PostFilters({
               <SlidersHorizontal className="mr-2 h-4 w-4" /> Filter & Urutkan
             </Button>
           </SheetTrigger>
-          <SheetContent>
+          <SheetContent className="px-4">
             <SheetHeader>
               <SheetTitle>Filter Postingan</SheetTitle>
               <SheetDescription>Persempit pencarian Anda.</SheetDescription>
