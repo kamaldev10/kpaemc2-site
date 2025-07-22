@@ -1,24 +1,21 @@
-// types/Post.ts
 export type Post = {
   id: number;
   title: string;
   slug: string;
   excerpt: string;
   description: string;
+  descruptionSource: string | null;
   imageUrl: string;
-  date: string | Date;
-  category: string;
+  imageSource: string | null;
+  date: Date | string;
+  // category: string; //category bentuk biasa saja
+  category:
+    | "Artikel"
+    | "Kegiatan"
+    | "Rilis Kegiatan"
+    | "Kolaborasi"
+    | "Pengalaman Pribadi"; //dijabarkan untuk keamanan dan autocomplete
   tags: string[];
-  featured?: boolean | null;
-
-  // Field Artikel
-  author?: string | null;
-  readTime?: number | null;
-
-  // Field Event
-  location?: string | null;
-  eventStartDate?: string | Date | null;
-  eventEndDate?: string | Date | null;
-  price?: string | null;
-  registrationLink?: string | null;
+  featured: boolean | null;
+  author: string | null;
 };
