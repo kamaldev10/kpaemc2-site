@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { type Post } from "@/types/Post";
 import { type PostFormValues } from "@/lib/validation/post.schema";
 
@@ -16,27 +15,9 @@ export function sanitizePostInitialData(post: Post): PostFormValues {
     description: Array.isArray(post.description)
       ? post.description.join("\n\n")
       : post.description,
-
-    // PERBAIKAN UTAMA: Konversi null/undefined menjadi nilai default yang valid
     featured: post.featured ?? false,
     author: post.author ?? "",
-    readTime: post.readTime ?? undefined,
-    location: post.location ?? "",
-    price: post.price ?? "",
-    registrationLink: post.registrationLink ?? "",
-
-    // Pisahkan DateTime menjadi Date dan Time untuk form
-    eventStartDate_Date: post.eventStartDate
-      ? new Date(post.eventStartDate)
-      : undefined,
-    eventStartDate_Time: post.eventStartDate
-      ? format(new Date(post.eventStartDate), "HH:mm")
-      : "",
-    eventEndDate_Date: post.eventEndDate
-      ? new Date(post.eventEndDate)
-      : undefined,
-    eventEndDate_Time: post.eventEndDate
-      ? format(new Date(post.eventEndDate), "HH:mm")
-      : "",
+    descriptionSource: post.descriptionSource ?? "",
+    imageSource: post.imageSource ?? "",
   };
 }
