@@ -48,8 +48,8 @@ export default function LatestPostsSection({ posts }: LatestPostsProps) {
             Terbaru dari Kami
           </h2>
           <p className="mt-2 text-lg leading-8 text-muted-foreground">
-            Jelajahi artikel, berita, dan pengumuman acara terbaru dari
-            organisasi kami.
+            Jelajahi artikel, berita, kegiatan terbaru, rilis kegiatan serta
+            pengalaman kami di {process.env.NEXT_PUBLIC_ORG_NAME}.
           </p>
         </div>
 

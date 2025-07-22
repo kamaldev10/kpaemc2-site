@@ -10,8 +10,6 @@ import {
   Share2,
   Settings,
   Globe,
-  LifeBuoy,
-  Send,
   BookUser,
   CircleAlert,
   FileChartColumn,
@@ -49,11 +47,11 @@ const data = {
       icon: LayoutDashboard,
     },
     {
-      title: "Konten ",
+      title: "Konten Kreator",
       icon: FileText,
       items: [
         { title: "Semua Postingan", url: "/dashboard/posts", icon: Newspaper },
-        { title: "Galeri", url: "/dashboard/gallery", icon: GalleryHorizontal },
+        { title: "Galeri (Coming Soon)", url: "#", icon: GalleryHorizontal },
       ],
     },
     {
@@ -73,8 +71,8 @@ const data = {
       icon: Share2,
       items: [
         {
-          title: "Jadwalkan Post",
-          url: "/dashboard/sosmed/scheduler",
+          title: "Jadwalkan Post (Coming Soon)",
+          url: "#",
           icon: Clock4,
         },
       ],
@@ -84,13 +82,13 @@ const data = {
       icon: FileChartColumn,
       items: [
         {
-          title: "Pengelolaan Surat",
-          url: "/dashboard/mail",
+          title: "Pengelolaan Surat (Coming Soon)",
+          url: "#",
           icon: Mail,
         },
         {
-          title: "pengelolaan Keuangan",
-          url: "/dashboard/finance",
+          title: "pengelolaan Keuangan (Coming Soon)",
+          url: "#",
           icon: HandCoins,
         },
       ],
@@ -98,19 +96,8 @@ const data = {
   ],
 
   navSecondary: [
-    { title: "Publik Website", url: "/", icon: Globe },
+    { title: "Website Publik", url: "/", icon: Globe },
     { title: "Pengaturan", url: "/dashboard/settings", icon: Settings },
-
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
   ],
 };
 
