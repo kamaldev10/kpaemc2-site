@@ -298,7 +298,36 @@ export const PostService = {
   },
 
   // Menghapus postingan berdasarkan slug
+  /**
+   * Menghapus postingan berdasarkan slug.
+   * Termasuk menghapus gambar terkait dari Cloudinary.
+   * @param slug - Slug dari postingan yang akan dihapus.
+   */
   async delete(slug: string) {
+    // 1. Ambil data postingan untuk mendapatkan URL gambar
+    const postToDelete = await prisma.post.findUnique({
+      where: { slug },
+    });
+
+    if (!postToDelete) {
+      throw new ApiError(404, "Postingan yang akan dihapus tidak ditemukan.");
+    }
+
+    // 2. Jika ada URL gambar, hapus dari Cloudinary
+    if (postToDelete.imageUrl) {
+      const publicId = extractPublicId(postToDelete.imageUrl);
+      if (publicId) {
+        console.log(`🧹 Menghapus gambar dari Cloudinary: ${publicId}`);
+        try {
+          await cloudinary.uploader.destroy(publicId);
+        } catch (error) {
+          // Log error jika gagal hapus dari Cloudinary, tapi tetap lanjutkan
+          console.error("Gagal menghapus gambar di Cloudinary:", error);
+        }
+      }
+    }
+
+    // 3. Hapus data postingan dari database
     return await prisma.post.delete({
       where: { slug },
     });
