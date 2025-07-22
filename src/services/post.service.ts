@@ -6,84 +6,19 @@
  * Menangani upload gambar, validasi data, dan operasi CRUD.
  */
 
-import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
-import { Readable } from "stream";
-
 import {
   postCreateSchema,
   postUpdateSchema,
 } from "@/lib/validation/post.schema";
-import { formatImageFilename } from "@/lib/utils/formatImageFilename";
-import { extractPublicId } from "@/lib/utils/cloudinary";
+import {
+  cloudinary,
+  extractPublicId,
+  uploadImage,
+} from "@/lib/utils/cloudinary";
 import { ApiError } from "@/lib/utils/errors";
 import { FilterState } from "@/hooks/useFilteredPosts";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-
-// --- Helper Functions ---
-
-/**
- * Mengubah Buffer menjadi Readable Stream untuk diunggah ke Cloudinary.
- * @param buffer - Buffer data file.
- */
-function bufferToStream(buffer: Buffer): Readable {
-  const readable = new Readable({
-    read() {
-      this.push(buffer);
-      this.push(null);
-    },
-  });
-  return readable;
-}
-
-/**
- * Helper internal untuk mengunggah file ke Cloudinary dengan validasi dan transformasi.
- * @param file - Objek File yang akan diunggah.
- * @param title - Judul postingan, digunakan untuk membuat nama file.
- * @returns URL aman dari gambar yang sudah diunggah dan dioptimasi.
- */
-async function uploadImageToCloudinary(
-  file: File,
-  title: string
-): Promise<string> {
-  // 1. Validasi ukuran file
-  if (file.size > 5 * 1024 * 1024) {
-    // 5 MB
-    throw new ApiError(413, "Ukuran file terlalu besar. Maksimal 5 MB.");
-  }
-
-  // 2. Buat nama file yang unik dan bersih
-  const publicId = formatImageFilename(title, file.name);
-  const buffer = Buffer.from(await file.arrayBuffer());
-
-  // 3. Proses upload ke Cloudinary
-  const uploadResult = await new Promise<UploadApiResponse>(
-    (resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          public_id: publicId,
-          folder: "post-images",
-          transformation: [
-            { width: 1200, crop: "limit" }, // Resize gambar, maks lebar 1200px
-            { quality: "auto:good" }, // Kompresi kualitas otomatis
-            { fetch_format: "auto" }, // Format file otomatis (webp/avif)
-          ],
-        },
-        (error, result) => {
-          if (error) return reject(error);
-          if (!result)
-            return reject(
-              new Error("Upload gagal, tidak ada hasil dari Cloudinary.")
-            );
-          resolve(result);
-        }
-      );
-      bufferToStream(buffer).pipe(uploadStream);
-    }
-  );
-
-  return uploadResult.secure_url;
-}
 
 export const PostService = {
   // Mengambil semua postingan dengan opsi
@@ -188,12 +123,16 @@ export const PostService = {
    */
   async create(formData: FormData) {
     const file = formData.get("file") as File | null;
-    let imageUrl = formData.get("imageUrl") as string; // URL yang ada (jika tidak ada file baru)
     const title = formData.get("title") as string;
+    let imageUrl = formData.get("imageUrl") as string;
 
-    // 1. Jika ada file baru, unggah ke Cloudinary
     if (file) {
-      imageUrl = await uploadImageToCloudinary(file, title);
+      // Panggil utilitas upload dengan opsi spesifik untuk postingan
+      imageUrl = await uploadImage(file, title, "post-images", [
+        { width: 1200, crop: "limit" },
+        { quality: "auto:good" },
+        { fetch_format: "auto" },
+      ]);
     }
 
     // 2. Kumpulkan semua data teks dari form untuk divalidasi
@@ -245,10 +184,12 @@ export const PostService = {
       throw new ApiError(404, "Postingan tidak ditemukan.");
     }
 
-    // 2. Jika ada file BARU yang diunggah
     if (file) {
-      // Unggah gambar baru ke Cloudinary
-      imageUrl = await uploadImageToCloudinary(file, title);
+      imageUrl = await uploadImage(file, title, "post-images", [
+        { width: 1200, crop: "limit" },
+        { quality: "auto:good" },
+        { fetch_format: "auto" },
+      ]);
 
       // Hapus gambar LAMA dari Cloudinary jika ada
       if (existingPost.imageUrl) {
@@ -297,7 +238,6 @@ export const PostService = {
     return await prisma.post.update({ where: { slug }, data: validatedData });
   },
 
-  // Menghapus postingan berdasarkan slug
   /**
    * Menghapus postingan berdasarkan slug.
    * Termasuk menghapus gambar terkait dari Cloudinary.
