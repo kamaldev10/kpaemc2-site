@@ -2,12 +2,12 @@
 
 import { SidebarIcon } from "lucide-react";
 
-import { SearchForm } from "@/components/dashboard/SearchForm";
+import { SearchForm } from "@/components/dashboard/layout/SearchForm";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
-import SwitchThemeToggle from "../shared/SwitchThemeToggle";
+import SwitchThemeToggle from "../../shared/SwitchThemeToggle";
 import { useTheme } from "next-themes";
 import { AppBreadcrumb } from "./AppBreadcrumb";
 

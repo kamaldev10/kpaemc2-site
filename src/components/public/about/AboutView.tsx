@@ -20,21 +20,8 @@ type AboutViewProps = {
 };
 
 export default function AboutView({ aboutData }: AboutViewProps) {
-  // PERBAIKAN: Type assertion untuk 'structure'
-  // const structureArray = (aboutData.structure as StructureInfo[]) || [];
-
-  // const periods = structureArray
-  //   .map((s) => s.period)
-  //   .sort((a, b) => Number(b) - Number(a));
-
-  // const [selectedPeriod, setSelectedPeriod] = useState(aboutData.activePeriod);
-
-  // const currentStructureData = structureArray.find(
-  //   (s) => s.period === selectedPeriod
-  // );
-
   return (
-    <div className="max-w-5xl px-4 py-16 mx-auto space-y-20 sm:py-24">
+    <div className="max-w-7xl px-4 py-8 mx-auto space-y-20 sm:py-16">
       {/* Section Header */}
       <motion.section
         className="text-center"
@@ -98,49 +85,6 @@ export default function AboutView({ aboutData }: AboutViewProps) {
           </ul>
         </div>
       </motion.section>
-
-      {/* Section Struktur Kepengurusan */}
-      {/* <section>
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">
-            Struktur Kepengurusan
-          </h2>
-          <p className="text-muted-foreground mt-4 mb-6">
-            Pilih periode untuk melihat bagan struktur organisasi.
-          </p>
-          <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-[280px] mx-auto">
-              <SelectValue placeholder="Pilih Periode" />
-            </SelectTrigger>
-            <SelectContent>
-              {periods.map((period) => (
-                <SelectItem key={period} value={period}>
-                  Periode {period}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Card className="overflow-hidden shadow-lg">
-          <CardContent className="p-4 md:p-6 bg-muted/20">
-            {currentStructureData?.image ? (
-              <Image
-                src={currentStructureData.image}
-                alt={`Struktur Organisasi Periode ${currentStructureData.period}`}
-                width={800}
-                height={1200}
-                className="w-full h-auto rounded-lg"
-              />
-            ) : (
-              <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
-                <p className="text-center text-muted-foreground">
-                  Gambar struktur untuk periode {selectedPeriod} tidak tersedia.
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </section> */}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Send } from "lucide-react";
-import SocialLink from "../shared/SocialLink";
+import SocialLink from "../../shared/SocialLink";
 import { FaWhatsapp, FaYoutube, FaFacebook, FaInstagram } from "react-icons/fa";
 import { FaThreads } from "react-icons/fa6";
 

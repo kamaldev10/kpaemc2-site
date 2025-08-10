@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils/utils";
 import { Menu, X, Search, UserCircle } from "lucide-react";
 
 import Image from "next/image";
-import SwitchThemeToggle from "../shared/SwitchThemeToggle";
+import SwitchThemeToggle from "../../shared/SwitchThemeToggle";
 
 const navItems = [
   { label: "Beranda", href: "/" },

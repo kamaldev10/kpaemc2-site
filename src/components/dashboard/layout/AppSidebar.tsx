@@ -18,9 +18,9 @@ import {
   HandCoins,
 } from "lucide-react";
 
-import { NavMain } from "@/components/dashboard/NavMain";
-import { NavSecondary } from "@/components/dashboard/NavSecondary";
-import { NavUser } from "@/components/dashboard/NavUser";
+import { NavMain } from "@/components/dashboard/layout/NavMain";
+import { NavSecondary } from "@/components/dashboard/layout/NavSecondary";
+import { NavUser } from "@/components/dashboard/layout/NavUser";
 import {
   Sidebar,
   SidebarContent,
