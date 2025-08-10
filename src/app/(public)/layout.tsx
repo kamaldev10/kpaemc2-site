@@ -1,7 +1,7 @@
 // app/(public)/layout.tsx
 import { ReactNode } from "react";
-import Navbar from "@/components/public/Navbar";
-import Footer from "@/components/public/Footer";
+import Navbar from "@/components/public/layout/Navbar";
+import Footer from "@/components/public/layout/Footer";
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
