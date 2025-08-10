@@ -26,6 +26,7 @@ import PostFilters from "@/components/shared/PostFilters";
 import { type Post } from "@/types/Post";
 import { type FilterState } from "@/hooks/useFilteredPosts"; // Gunakan tipe FilterState yang sudah ada
 import { CardFooter } from "@/components/ui/card";
+import PostsListSkeleton from "@/components/public/post/PostsListSkeleton";
 
 const POSTS_PER_PAGE = 10;
 
@@ -126,7 +127,7 @@ function PostsPageContent() {
 
   return (
     <section className="bg-background">
-      <div className="max-w-6xl mx-auto px-4 py-16 sm:py-24">
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:py-16">
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             Artikel & Event
@@ -145,9 +146,7 @@ function PostsPageContent() {
 
         <div className="mt-12 min-h-[50vh]">
           {isLoading ? (
-            <div className="flex justify-center items-center h-full pt-20">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
+            <PostsListSkeleton />
           ) : posts.length > 0 ? (
             <div className="space-y-8 border-y py-6">
               {posts.map((post) => (

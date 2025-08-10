@@ -47,7 +47,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Loader2,
   MoreHorizontal,
   PlusCircle,
   Pencil,
@@ -78,6 +77,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import MemberCardDialog from "@/components/dashboard/members/MemberCardDialog";
+import MembersTableSkeleton from "@/components/dashboard/members/MembersTableSkeleton";
 
 const MEMBERS_PER_PAGE = 20;
 type SortableKey = "name" | "nomorAnggota" | "jurusan" | "status";
@@ -453,168 +453,166 @@ export default function MembersManagementPage() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Separator />
-            <Table className="max-w-dvh sm:max-w-full">
-              <TableCaption>
-                <p className="flex text-xs items-center">
-                  <span className="font-semibold mr-2">Note:</span>
-                  <Badge variant="destructive" className="mr-1">
-                    Non Aktif
-                  </Badge>
-                  dipecat, meniggal dll (bukan anggota{" "}
-                  {process.env.NEXT_PUBLIC_ORG_NAME})
-                </p>
-              </TableCaption>
-              <TableHeader>
-                <TableRow className="items-center justify-center-safe">
-                  <TableHead className="max-w-12 ">
-                    <Checkbox
-                      onCheckedChange={handleSelectAll}
-                      checked={isSelectAllMode}
-                    />
-                  </TableHead>
-                  <TableHead className="max-w-2/6">
-                    <Button
-                      variant="ghost"
-                      onClick={() => handleSortChange("name")}
-                    >
-                      Nama <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
-                  <TableHead className="max-w-1/6">
-                    <Button
-                      variant="ghost"
-                      onClick={() => handleSortChange("nomorAnggota")}
-                    >
-                      No. Anggota <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
-                  <TableHead className="max-w-1/6">
-                    <Button
-                      variant="ghost"
-                      onClick={() => handleSortChange("jurusan")}
-                    >
-                      Jurusan <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
-                  <TableHead className="max-w-1/6">
-                    <Button
-                      variant="ghost"
-                      onClick={() => handleSortChange("status")}
-                    >
-                      Status <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TableHead>
-                  <TableHead className="text-right">Aksi</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {paginatedMembers.map((member, index) => {
-                  const isChecked = isSelectAllMode
-                    ? !selectedIds.has(member.id)
-                    : selectedIds.has(member.id);
-
-                  const rowNumber =
-                    (currentPage - 1) * MEMBERS_PER_PAGE + index + 1;
-
-                  return (
-                    <TableRow
-                      key={member.id}
-                      data-state={isChecked ? "selected" : ""}
-                      className="items-center justify-items-center-safe w-full text-xs sm:text-sm"
-                    >
-                      <TableCell>
-                        {isSelectAllMode ? (
-                          <Checkbox
-                            checked={isChecked}
-                            onCheckedChange={(checked) =>
-                              handleSelectRow(member.id, !!checked)
-                            }
-                          />
-                        ) : (
-                          <span className="text-muted-foreground">
-                            {rowNumber}
-                          </span>
-                        )}
-                      </TableCell>
-
-                      <TableCell className="flex items-center gap-3 w-2/6 sm:w-full ">
-                        <Image
-                          src={
-                            member.avatarUrl || "/images/person-placeholder.svg"
-                          }
-                          alt={member.name}
-                          width={40}
-                          height={40}
-                          className="rounded-full object-cover bg-muted"
-                          loading="lazy"
-                        />
-                        <div className="">
-                          <p className="font-medium text-ellipsis md:text-clip">
-                            {member.name}
-                          </p>
-                          <p className="  text-muted-foreground">
-                            {member.nomorTelepon || "-"}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">{member.nomorAnggota}</Badge>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground flex">
-                        {member.jurusan || "-"}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={getStatusVariant(member.status)}
-                          className=""
-                        >
-                          {member.status || "N/A"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button size="icon" variant="ghost">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem
-                              onClick={() => handleOpenDetail(member)}
-                            >
-                              Kartu Anggota
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => handleOpenForm(member)}
-                            >
-                              <Pencil className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDelete(member)}
-                              className="text-destructive"
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Hapus
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-
-                {isLoading === true && (
-                  <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center">
-                      <Loader2 className="h-6 w-6 animate-spin mx-auto" />{" "}
-                      Memuat data anggota...
-                    </TableCell>
+            {isLoading ? (
+              <MembersTableSkeleton />
+            ) : (
+              <Table className="max-w-dvh sm:max-w-full">
+                <TableCaption>
+                  <p className="flex text-xs items-center">
+                    <span className="font-semibold mr-2">Note:</span>
+                    <Badge variant="destructive" className="mr-1">
+                      Non Aktif
+                    </Badge>
+                    dipecat, meniggal dll (bukan anggota{" "}
+                    {process.env.NEXT_PUBLIC_ORG_NAME})
+                  </p>
+                </TableCaption>
+                <TableHeader>
+                  <TableRow className="items-center justify-center-safe">
+                    <TableHead className="max-w-12 ">
+                      <Checkbox
+                        onCheckedChange={handleSelectAll}
+                        checked={isSelectAllMode}
+                      />
+                    </TableHead>
+                    <TableHead className="max-w-2/6">
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSortChange("name")}
+                      >
+                        Nama <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                    <TableHead className="max-w-1/6">
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSortChange("nomorAnggota")}
+                      >
+                        No. Anggota <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                    <TableHead className="max-w-1/6">
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSortChange("jurusan")}
+                      >
+                        Jurusan <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                    <TableHead className="max-w-1/6">
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSortChange("status")}
+                      >
+                        Status <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                    <TableHead className="text-right">Aksi</TableHead>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {paginatedMembers.map((member, index) => {
+                    const isChecked = isSelectAllMode
+                      ? !selectedIds.has(member.id)
+                      : selectedIds.has(member.id);
+
+                    const rowNumber =
+                      (currentPage - 1) * MEMBERS_PER_PAGE + index + 1;
+
+                    return (
+                      <TableRow
+                        key={member.id}
+                        data-state={isChecked ? "selected" : ""}
+                        className="items-center justify-items-center-safe w-full text-xs sm:text-sm"
+                      >
+                        <TableCell>
+                          {isSelectAllMode ? (
+                            <Checkbox
+                              checked={isChecked}
+                              onCheckedChange={(checked) =>
+                                handleSelectRow(member.id, !!checked)
+                              }
+                            />
+                          ) : (
+                            <span className="text-muted-foreground">
+                              {rowNumber}
+                            </span>
+                          )}
+                        </TableCell>
+
+                        <TableCell className="flex items-center gap-3 w-2/6 sm:w-full ">
+                          <Image
+                            src={
+                              member.avatarUrl ||
+                              "/images/person-placeholder.svg"
+                            }
+                            alt={member.name}
+                            width={40}
+                            height={40}
+                            className="rounded-full object-cover bg-muted"
+                            loading="lazy"
+                          />
+                          <div className="">
+                            <p className="font-medium text-ellipsis md:text-clip">
+                              {member.name}
+                            </p>
+                            <p className="  text-muted-foreground">
+                              {member.nomorTelepon || "-"}
+                            </p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="secondary">
+                            {member.nomorAnggota}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground flex">
+                          {member.jurusan || "-"}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={getStatusVariant(member.status)}
+                            className=""
+                          >
+                            {member.status || "N/A"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button size="icon" variant="ghost">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                onClick={() => handleOpenDetail(member)}
+                              >
+                                Kartu Anggota
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => handleOpenForm(member)}
+                              >
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDelete(member)}
+                                className="text-destructive"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Hapus
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            )}
             <Separator />
           </div>
         </CardContent>
