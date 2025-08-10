@@ -1,6 +1,6 @@
 // app/(dashboard)/layout.tsx
-import { AppSidebar } from "@/components/dashboard/AppSidebar";
-import { SiteHeader } from "@/components/dashboard/SiteHeader";
+import { AppSidebar } from "@/components/dashboard/layout/AppSidebar";
+import { SiteHeader } from "@/components/dashboard/layout/SiteHeader";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "sonner";
 
