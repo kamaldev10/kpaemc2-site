@@ -2,10 +2,7 @@
 
 import { Control } from "react-hook-form";
 import Image from "next/image";
-import { format } from "date-fns";
-import { id as localeID } from "date-fns/locale";
-import { cn } from "@/lib/utils/utils";
-import { CalendarIcon, Loader2, Save, X } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 import { type PostFormValues } from "@/lib/validation/post.schema";
 
 // Komponen UI...
@@ -19,12 +16,6 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -41,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DatePickerInput } from "@/components/shared/DatePickerInput";
 
 type MetadataSidebarProps = {
   control: Control<PostFormValues>;
@@ -202,45 +194,24 @@ export default function MetadataSidebar({
           />
 
           <FormField
-            name="date"
             control={control}
+            name="date"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem>
                 <FormLabel>
                   Tanggal Publikasi <span className="text-destructive">*</span>
                 </FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: localeID })
-                        ) : (
-                          <span>Pilih tanggal</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <FormControl>
+                  <DatePickerInput
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             name="tags"
             control={control}
